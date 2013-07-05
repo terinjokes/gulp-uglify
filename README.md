@@ -23,7 +23,7 @@ var uglify = require('gulp-uglify');
 
 gulp.task('compress', function() {
   gulp.folder('./lib/*.js')
-    .pipe(uglify)
+    .pipe(uglify())
     .pipe(gulp.folder('./dist/'))
 });
 ```
