@@ -6,7 +6,7 @@ module.exports = function() {
 	function minify(file, callback) {
 		var newFile = {
 			path: file.path,
-			contents: uglify.minify(String(file.contents), {fromString: true}).code
+			contents: new Buffer(uglify.minify(String(file.contents), {fromString: true}).code)
 		};
 
 		callback(null, newFile);

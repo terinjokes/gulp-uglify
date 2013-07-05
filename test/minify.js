@@ -9,15 +9,24 @@ require('mocha');
 
 describe('gulp-uglify minification', function() {
 	describe('gulp-uglify', function() {
+		var filename = path.join(__dirname, './fixtures/data.js');
 		it('should minify my files', function(done) {
-			var filename = path.join(__dirname, './fixtures/data.js'),
-			stream = gulp.file(path.join(__dirname, './fixtures/data.js'))
-			  .pipe(uglify())
-			  .pipe(es.map(function(file, callback){
-			  	var expected = uglifyjs.minify(filename).code;
-			  	expect(expected).to.equal(String(file.contents));
-			  	done();
-			  }));
+			gulp.file(filename)
+				.pipe(uglify())
+				.pipe(es.map(function(file){
+					var expected = uglifyjs.minify(filename).code;
+					expect(expected).to.equal(String(file.contents));
+					done();
+				}));
+		});
+
+		it('should return file.contents as a buffer', function(done) {
+			gulp.file(filename)
+				.pipe(uglify())
+				.pipe(es.map(function(file) {
+					expect(file.contents).to.be.an.instanceof(Buffer);
+					done();
+				}));
 		});
 	});
 });
