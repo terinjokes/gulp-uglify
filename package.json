@@ -12,9 +12,6 @@
     "event-stream": "~3.0.15",
     "uglify-js": "~2.3.6"
   },
-  "peerDependencies": {
-    "gulp": "*"
-  },
   "main": "index.js",
   "engines": {
     "node": ">= 0.6"
@@ -24,6 +21,7 @@
   },
   "devDependencies": {
     "mocha": "~1.12.0",
-    "chai": "~1.7.2"
+    "chai": "~1.7.2",
+    "gulp": "*"
   }
 }
