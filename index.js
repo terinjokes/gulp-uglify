@@ -1,7 +1,7 @@
 var es = require('event-stream'),
 		uglify = require('uglify-js');
 
-module.exports = (function() {
+module.exports = function() {
 	'use strict';
 	function minify(file, callback) {
 		var newFile = {
@@ -13,4 +13,4 @@ module.exports = (function() {
 	}
 
 	return es.map(minify);
-}());
+};
