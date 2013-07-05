@@ -12,7 +12,7 @@
 </tr>
 <tr>
 <td>Node Version</td>
-<td>>= 0.4</td>
+<td>≥ 0.6</td>
 </tr>
 </table>
 
@@ -22,7 +22,7 @@
 var uglify = require('gulp-uglify');
 
 gulp.task('compress', function() {
-  gulp.folder('./lib/*.js')
+  gulp.files('./lib/*.js')
     .pipe(uglify())
     .pipe(gulp.folder('./dist/'))
 });

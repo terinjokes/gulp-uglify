@@ -11,7 +11,7 @@ describe('gulp-uglify minification', function() {
 	describe('gulp-uglify', function() {
 		it('should minify my files', function(done) {
 			var filename = path.join(__dirname, './fixtures/data.js'),
-			stream = gulp.files(path.join(__dirname, './fixtures/data.js'))
+			stream = gulp.file(path.join(__dirname, './fixtures/data.js'))
 			  .pipe(uglify())
 			  .pipe(es.map(function(file, callback){
 			  	var expected = uglifyjs.minify(filename).code;
