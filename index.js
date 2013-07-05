@@ -1,5 +1,5 @@
 var es = require('event-stream'),
-		uglify = require('uglify-js');
+  uglify = require('uglify-js');
 
 module.exports = function() {
 	'use strict';
@@ -8,7 +8,7 @@ module.exports = function() {
 			path: file.path,
 			contents: uglify.minify(String(file.contents), {fromString: true}).code
 		};
-
+	
 		callback(null, newFile);
 	}
 
