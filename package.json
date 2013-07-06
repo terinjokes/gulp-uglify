@@ -10,7 +10,8 @@
   "author": "Terin Stock <terinjokes@gmail.com>",
   "dependencies": {
     "event-stream": "~3.0.15",
-    "uglify-js": "~2.3.6"
+    "uglify-js": "~2.3.6",
+    "clone": "~0.1.9"
   },
   "main": "index.js",
   "engines": {
