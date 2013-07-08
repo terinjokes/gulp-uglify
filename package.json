@@ -1,6 +1,6 @@
 {
   "name": "gulp-uglify",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Minify files with UglifyJS.",
   "keywords": [
     "gulpplugin"
