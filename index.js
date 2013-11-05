@@ -1,15 +1,14 @@
 var es = require('event-stream'),
-		uglify = require('uglify-js'),
-		clone = require('clone');
+		uglify = require('uglify-js');
 
-module.exports = function() {
+module.exports = function(opt) {
 	'use strict';
-	function minify(file, callback) {
-		var newFile = clone(file);
-		newFile.contents = new Buffer(uglify.minify(String(file.contents), {fromString: true}).code);
 
-		callback(null, newFile);
-	}
+	opt = opt || {};
+	opt.fromString = true;
 
-	return es.map(minify);
+	return es.map(function (file, callback) {
+		file.contents = new Buffer(uglify.minify(String(file.contents), opt).code);
+		callback(null, file);
+	});
 };
