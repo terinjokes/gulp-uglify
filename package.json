@@ -10,7 +10,7 @@
   "author": "Terin Stock <terinjokes@gmail.com>",
   "dependencies": {
     "event-stream": "~3.0.15",
-    "uglify-js": "~2.3.6",
+    "uglify-js": "~2.4.6",
     "clone": "~0.1.9"
   },
   "main": "index.js",
@@ -21,8 +21,8 @@
     "test": "mocha"
   },
   "devDependencies": {
-    "mocha": "~1.12.0",
-    "chai": "~1.7.2",
-    "gulp": "~0.0.5"
+    "mocha": "~1.15.1",
+    "chai": "~1.8.1",
+    "gulp": "~2.6.0"
   }
 }
