@@ -8,7 +8,11 @@ module.exports = function(opt) {
 	opt.fromString = true;
 
 	return es.map(function (file, callback) {
-		file.contents = new Buffer(uglify.minify(String(file.contents), opt).code);
+		try {
+			file.contents = new Buffer(uglify.minify(String(file.contents), opt).code);
+		} catch(e) {
+			console.warn('Error caught from uglify: ' + e.message + '. Returning unminified code');
+		}
 		callback(null, file);
 	});
 };
