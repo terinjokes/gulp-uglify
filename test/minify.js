@@ -36,7 +36,7 @@ describe('gulp-uglify minification', function() {
 			gulp.src(filename)
 				.pipe(uglify())
 				.pipe(es.map(function(file) {
-					var expected = fs.readFileSync(filename, {encoding: 'utf8'});
+					var expected = fs.readFileSync(filename, 'utf-8');
 					expect(String(file.contents)).to.equal(expected);
 					done();
 				}));
