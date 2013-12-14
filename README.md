@@ -22,11 +22,12 @@
 var uglify = require('gulp-uglify');
 
 gulp.task('compress', function() {
-  gulp.files('./lib/*.js')
+  gulp.src('lib/*.js')
     .pipe(uglify())
-    .pipe(gulp.folder('./dist/'))
+    .pipe(gulp.dest('dist'))
 });
 ```
+You can also pass the `uglify` function any of the options [listed here](https://github.com/mishoo/UglifyJS2#the-simple-way) to modify uglify's behavior.
 
 ## LICENSE
 
