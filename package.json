@@ -1,21 +1,28 @@
 {
   "name": "gulp-uglify",
-  "version": "0.1.0",
-  "description": "Minify files with UglifyJS.",
+  "version": "0.2.0",
+  "description": "Minify files with UglifyJS2.",
   "keywords": [
     "gulpplugin"
   ],
   "repository": "https://github.com/terinjokes/gulp-uglify.git",
   "homepage": "http://terinjokes.github.io/gulp-uglify/",
   "author": "Terin Stock <terinjokes@gmail.com>",
+  "contributors": [
+    {
+      "name": "Jonathan Pollack",
+      "email": "jonathanepollack@gmail.com"
+    }
+  ],
   "dependencies": {
     "event-stream": "~3.0.15",
     "uglify-js": "~2.4.6",
-    "clone": "~0.1.9"
+    "clone": "~0.1.9",
+    "mkdirp": "~0.3.5"
   },
   "main": "index.js",
   "engines": {
-    "node": ">= 0.6"
+    "node": ">= 0.8"
   },
   "scripts": {
     "test": "mocha"
@@ -23,6 +30,9 @@
   "devDependencies": {
     "mocha": "~1.15.1",
     "chai": "~1.8.1",
-    "gulp": "~2.6.0"
+    "gulp": "3.x.x"
+  },
+  "peerDependencies":{
+    "gulp": "3.x.x"
   }
 }
