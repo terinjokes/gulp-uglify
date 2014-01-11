@@ -29,6 +29,20 @@ gulp.task('compress', function() {
 ```
 You can also pass the `uglify` function any of the options [listed here](https://github.com/mishoo/UglifyJS2#the-simple-way) to modify uglify's behavior.
 
+## Custom Options
+
+### preserveComments
+Type: `Boolean`, `String`, `Function`
+Default: `undefined`
+Options: `true` `'all'` `'some'`
+
+Turn on preservation of comments. (*Will be parsed to options.output.comments*)
+(Credits to [grunt-contrib-uglify](https://github.com/gruntjs/grunt-contrib-uglify))
+
+- `true` || `'all'` will preserve all comments in code blocks that have not been squashed or dropped
+- `'some'` will preserve all comments that start with a bang (`!`) or include a closure compiler style directive (`@preserve` `@license` `@cc_on`)
+- `function` specify your own comment preservation function. You will be passed the current node and the current comment and are expected to return either `true` or `false`
+
 ## LICENSE
 
 (MIT License)
