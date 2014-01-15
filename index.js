@@ -11,7 +11,7 @@ module.exports = function(opt) {
 		try {
 			file.contents = new Buffer(uglify.minify(String(file.contents), opt).code);
 		} catch(e) {
-			console.warn('Error caught from uglify: ' + e.message + '. Returning unminified code');
+			console.warn('Error caught from uglify: ' + e.message + ' in ' + file.path + '. Returning unminified code');
 		}
 		callback(null, file);
 	});
