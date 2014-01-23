@@ -1,18 +1,27 @@
-var es = require('event-stream'),
-		uglify = require('uglify-js');
+'use strict';
+var through = require('through2'),
+	uglify = require('uglify-js'),
+	extend = require('xtend');
 
 module.exports = function(opt) {
-	'use strict';
 
-	opt = opt || {};
-	opt.fromString = true;
-
-	return es.map(function (file, callback) {
-		try {
-			file.contents = new Buffer(uglify.minify(String(file.contents), opt).code);
-		} catch(e) {
-			console.warn('Error caught from uglify: ' + e.message + '. Returning unminified code');
-		}
-		callback(null, file);
+	var options = extend({}, opt, {
+		fromString: true
 	});
+
+	function minify(file, encoding, callback) {
+		/*jshint validthis:true */
+		var mangled;
+
+		try {
+			mangled = uglify.minify(String(file.contents), options);
+			file.contents = new Buffer(mangled.code);
+		} catch (e) {
+			console.warn('Error caught from uglify: ' + e.message + ' in ' + file.path + '. Returning unminifed code');
+		}
+
+		this.push(file);
+		callback();
+	}
+	return through.obj(minify);
 };

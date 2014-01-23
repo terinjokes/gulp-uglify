@@ -9,9 +9,9 @@
   "homepage": "http://terinjokes.github.io/gulp-uglify/",
   "author": "Terin Stock <terinjokes@gmail.com>",
   "dependencies": {
-    "event-stream": "~3.0.15",
     "uglify-js": "~2.4.6",
-    "clone": "~0.1.9"
+    "xtend": "~2.1.2",
+    "through2": "~0.4.0"
   },
   "main": "index.js",
   "engines": {
@@ -23,6 +23,9 @@
   "devDependencies": {
     "mocha": "~1.15.1",
     "chai": "~1.8.1",
-    "gulp": "~2.6.0"
+    "gulp": "~3.4.0"
+  },
+  "peerDependencies": {
+    "gulp": "~3.4.0"
   }
 }
