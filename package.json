@@ -1,6 +1,6 @@
 {
   "name": "gulp-uglify",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Minify files with UglifyJS.",
   "keywords": [
     "gulpplugin"
@@ -24,9 +24,10 @@
   "devDependencies": {
     "mocha": "~1.15.1",
     "chai": "~1.8.1",
-    "gulp": "~3.4.0"
+    "gulp": ">= 3.4.0 <3.6.0"
   },
   "peerDependencies": {
-    "gulp": "~3.4.0"
-  }
+    "gulp": ">= 3.4.0 <3.6.0"
+  },
+  "license": "MIT"
 }
