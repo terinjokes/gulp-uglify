@@ -44,5 +44,21 @@ describe('gulp-uglify minification', function() {
 					done();
 				}));
 		});
+
+		it('should dynamically name source map files', function(done) {
+			var filename = path.join(__dirname, './fixtures/data.js');
+			gulp.src(filename)
+				.pipe(uglify({outSourceMap: true}))
+				.pipe(through.obj(function(file, encoding, callback) {
+					var map;
+					if (/\.map/.test(file.path)) {
+						map = JSON.parse(file.contents);
+						expect(file.path).to.equal(filename + '.map');
+						expect(map).to.be.an.instanceof(Object);
+						done();
+					}
+					callback();
+				}));
+		});
 	});
 });
