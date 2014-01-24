@@ -1,15 +1,16 @@
 'use strict';
 var through = require('through2'),
 	uglify = require('uglify-js'),
-	extend = require('xtend'),
+	merge = require('deepmerge'),
 	Vinyl = require('vinyl');
 
 module.exports = function(opt) {
 
 	function minify(file, encoding, callback) {
 		/*jshint validthis:true */
-		var options = extend({}, opt, {
-			fromString: true
+		var options = merge(opt || {}, {
+			fromString: true,
+			output: {}
 		});
 
 		var mangled,
@@ -17,6 +18,15 @@ module.exports = function(opt) {
 
 		if (options.outSourceMap === true) {
 			options.outSourceMap = file.relative + '.map';
+		}
+
+		if (options.preserveComments === 'all') {
+			options.output.comments = true;
+		} else if (options.preserveComments === 'some') {
+			// preserve comments with directives or that start with a bang (!)
+			options.output.comments = /^!|@preserve|@license|@cc_on/i;
+		} else if (typeof options.preserveComments === 'function') {
+			options.output.comments = options.preserveComments;
 		}
 
 		try {

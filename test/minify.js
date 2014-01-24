@@ -60,5 +60,18 @@ describe('gulp-uglify minification', function() {
 					callback();
 				}));
 		});
+
+		it('should preserve some comments', function(done) {
+			var filename = path.join(__dirname, './fixtures/data.js');
+			gulp.src(filename)
+				.pipe(uglify({preserveComments: 'some'}))
+				.pipe(through.obj(function(file, encoding, callback) {
+					expect(file.contents).to.be.an.instanceof(Buffer);
+					expect(/MIT/.test(file.contents)).to.be.true;
+					callback();
+					done();
+				}));
+		});
+
 	});
 });
