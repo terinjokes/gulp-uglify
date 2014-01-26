@@ -23,7 +23,7 @@ var uglify = require('gulp-uglify');
 
 gulp.task('compress', function() {
   gulp.src('lib/*.js')
-    .pipe(uglify({outSourceMaps: true))
+    .pipe(uglify({outSourceMaps: true}))
     .pipe(gulp.dest('dist'))
 });
 ```
