@@ -14,7 +14,8 @@ module.exports = function(opt) {
 		});
 
 		var mangled,
-			map;
+			map,
+			sourceMap;
 
 		if (options.outSourceMap === true) {
 			options.outSourceMap = file.relative + '.map';
@@ -40,11 +41,13 @@ module.exports = function(opt) {
 		}
 
 		if (options.outSourceMap) {
+			sourceMap = JSON.parse(mangled.map);
+			sourceMap.sources = [ file.relative ];
 			map = new Vinyl({
 				cwd: file.cwd,
 				base: file.base,
 				path: file.path + '.map',
-				contents: new Buffer(mangled.map)
+				contents: new Buffer(JSON.stringify(sourceMap))
 			});
 			this.push(map);
 		}
