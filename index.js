@@ -2,12 +2,23 @@
 var through = require('through2'),
 	uglify = require('uglify-js'),
 	merge = require('deepmerge'),
-	Vinyl = require('vinyl');
+	Vinyl = require('vinyl'),
+	uglifyError = require('./lib/error.js');
 
 module.exports = function(opt) {
 
 	function minify(file, encoding, callback) {
 		/*jshint validthis:true */
+
+		if (file.isNull()) {
+			this.push(file);
+			return callback();
+		}
+
+		if (file.isStream()) {
+			return callback(uglifyError('Streaming not supported'));
+		}
+
 		var options = merge(opt || {}, {
 			fromString: true,
 			output: {}

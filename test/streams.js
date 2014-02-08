@@ -3,7 +3,8 @@ var test = require('tape'),
 		Vinyl = require('vinyl'),
 		gulpUglify = require('../'),
 		Readable = require('stream').Readable,
-		Stream = require('stream');
+		Stream = require('stream'),
+		PluginError = require('gulp-util/lib/PluginError');
 	
 var testContentsInput = 'function errorFunction(error) {';
 
@@ -15,7 +16,7 @@ var testFile1 = new Vinyl({
 });
 
 test('should emit error for stream files', function(t) {
-	t.plan(1);
+	t.plan(3);
 
 	var stream = gulpUglify();
 
@@ -23,8 +24,10 @@ test('should emit error for stream files', function(t) {
 		.on('data', function() {
 			t.fail('should emit error for streams');
 		})
-		.on('error', function() {
+		.on('error', function(e) {
 			t.pass('emitted error');
+			t.ok(e instanceof PluginError, 'error is a PluginError');
+			t.equal(e.plugin, 'gulp-uglify', 'error is from gulp-uglify');
 		});
 
 	stream.write(testFile1);
