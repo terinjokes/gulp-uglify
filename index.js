@@ -41,8 +41,16 @@ module.exports = function(opt) {
 			options.output.comments = options.preserveComments;
 		}
 
+		var fileContentsString = String(file.contents);
+
+		if (options.wrap === true) {
+			// Uglify.minify does not include --wrap as an option. This is a
+			// bad yet functional solution
+			fileContentsString = '(function(){' + fileContentsString + '})();'
+		}
+
 		try {
-			mangled = uglify.minify(String(file.contents), options);
+			mangled = uglify.minify(fileContentsString, options);
 			file.contents = new Buffer(mangled.code);
 			this.push(file);
 		} catch (e) {

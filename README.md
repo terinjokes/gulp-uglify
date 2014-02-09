@@ -34,6 +34,11 @@ gulp.task('compress', function() {
 
 	Pass `false` to skip mangling names.
 
+- `wrap`
+
+	Pass `true` to add a top level safety closure to avoid leaking
+	to the global scope.
+
 - `output`
 
 	Pass an object if you wish to specify additional [output
