@@ -43,13 +43,14 @@ module.exports = function(opt) {
 
 		try {
 			mangled = uglify.minify(String(file.contents), options);
-			file.contents = new Buffer(mangled.code);
-			this.push(file);
 		} catch (e) {
 			console.warn('Error caught from uglify: ' + e.message + ' in ' + file.path + '. Returning unminifed code');
 			this.push(file);
 			return callback();
 		}
+		
+		file.contents = new Buffer(mangled.code);
+		this.push(file);
 
 		if (options.outSourceMap) {
 			sourceMap = JSON.parse(mangled.map);
