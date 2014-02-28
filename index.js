@@ -3,6 +3,7 @@ var through = require('through2'),
 	uglify = require('uglify-js'),
 	merge = require('deepmerge'),
 	Vinyl = require('vinyl'),
+	minimatch = require('minimatch'),
 	uglifyError = require('./lib/error.js');
 
 module.exports = function(opt) {
@@ -20,16 +21,20 @@ module.exports = function(opt) {
 		}
 
 		var options = merge(opt || {}, {
-			fromString: true,
-			output: {}
-		});
+		    	fromString: true,
+		    	output: {}
+		    }),
+		    mangled,
+		    map,
+		    sourceMap;
 
-		var mangled,
-			map,
-			sourceMap;
-
-		if (options.outSourceMap === true) {
-			options.outSourceMap = file.relative + '.map';
+		if(typeof options.ignorePattern === 'string'){
+			//	ignore files that match the given pattern
+			if(minimatch(file.path, options.ignorePattern)){
+				
+				this.push(file);
+				return callback();
+			}
 		}
 
 		if (options.preserveComments === 'all') {
@@ -51,7 +56,7 @@ module.exports = function(opt) {
 			return callback();
 		}
 
-		if (options.outSourceMap) {
+		if (options.outSourceMap === true) {
 			sourceMap = JSON.parse(mangled.map);
 			sourceMap.sources = [ file.relative ];
 			map = new Vinyl({
