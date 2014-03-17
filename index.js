@@ -21,6 +21,7 @@ module.exports = function(opt) {
 
 		var options = merge(opt || {}, {
 			fromString: true,
+			swallowErrors : true,
 			output: {}
 		});
 
@@ -46,9 +47,17 @@ module.exports = function(opt) {
 			file.contents = new Buffer(mangled.code);
 			this.push(file);
 		} catch (e) {
-			console.warn('Error caught from uglify: ' + e.message + ' in ' + file.path + '. Returning unminifed code');
-			this.push(file);
-			return callback();
+			if(!options.swallowErrors) {
+				return callback(uglifyError({
+					message:e.message,
+					fileName: file.path,
+					lineNumber: e.line
+				}));
+			} else {
+				console.warn('Error caught from uglify: ' + e.message + ' in ' + file.path + '. Returning unminifed code');
+				this.push(file);
+				return callback();
+			}
 		}
 
 		if (options.outSourceMap) {

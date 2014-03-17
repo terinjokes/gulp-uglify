@@ -46,6 +46,12 @@ gulp.task('compress', function() {
 	options](http://lisperator.net/uglifyjs/compress). Pass `false` to skip
 	compression completely.
 
+- `swallowErrors`
+
+	`true` if the unminified javascript should be returned on an uglify error.
+	`false` if an uglify error should be propagated as a gulp error
+	(defaults to `true`)
+
 - `preserveComments`
 
 	A convenience option for `options.output.comments`. Defaults to preserving no
