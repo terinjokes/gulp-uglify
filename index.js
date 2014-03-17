@@ -21,7 +21,6 @@ module.exports = function(opt) {
 
 		var options = merge(opt || {}, {
 			fromString: true,
-			swallowErrors : true,
 			output: {}
 		});
 
@@ -47,7 +46,7 @@ module.exports = function(opt) {
 			file.contents = new Buffer(mangled.code);
 			this.push(file);
 		} catch (e) {
-			if(!options.swallowErrors) {
+			if(options.swallowErrors === false) {
 				return callback(uglifyError({
 					message:e.message,
 					fileName: file.path,
