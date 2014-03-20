@@ -1,4 +1,4 @@
-# gulp-uglify [![Build Status](https://travis-ci.org/terinjokes/gulp-uglify.png?branch=master)](https://travis-ci.org/terinjokes/gulp-uglify)
+# gulp-uglify [![Build Status](http://img.shields.io/travis/terinjokes/gulp-uglify.svg)](https://travis-ci.org/terinjokes/gulp-uglify) [![](http://img.shields.io/npm/dm/gulp-uglify.svg)](https://www.npmjs.org/package/gulp-uglify) [![](http://img.shields.io/npm/v/gulp-uglify.svg)](https://www.npmjs.org/package/gulp-uglify)
 
 > Minify JavaScript with UglifyJS2.
 
