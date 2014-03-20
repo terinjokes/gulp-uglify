@@ -1,20 +1,6 @@
-[![Build Status](https://travis-ci.org/terinjokes/gulp-uglify.png?branch=master)](https://travis-ci.org/terinjokes/gulp-uglify)
+# gulp-uglify [![Build Status](https://travis-ci.org/terinjokes/gulp-uglify.png?branch=master)](https://travis-ci.org/terinjokes/gulp-uglify)
 
-## Information
-
-<table>
-<tr>
-<td>Package</td><td>gulp-uglify</td>
-</tr>
-<tr>
-<td>Description</td>
-<td>Minify files with UglifyJS.</td>
-</tr>
-<tr>
-<td>Node Version</td>
-<td>≥ 0.9</td>
-</tr>
-</table>
+> Minify JavaScript with UglifyJS2.
 
 ## Usage
 
@@ -23,7 +9,7 @@ var uglify = require('gulp-uglify');
 
 gulp.task('compress', function() {
   gulp.src('lib/*.js')
-    .pipe(uglify({outSourceMap: true}))
+    .pipe(uglify())
     .pipe(gulp.dest('dist'))
 });
 ```
@@ -52,7 +38,7 @@ gulp.task('compress', function() {
 	comments.
 
 	- `all`
-		
+
 		Preserve all comments in code blocks
 
 	- `some`
@@ -69,13 +55,3 @@ gulp.task('compress', function() {
 You can also pass the `uglify` function any of the options [listed
 here](https://github.com/mishoo/UglifyJS2#the-simple-way) to modify
 UglifyJS's behavior.
-
-
-### Source Maps
-
-You can have UglifyJS’s generated source maps emitted on the stream by passing
-`true` for the `outSourceMap` option. The file object’s path will be based on
-the input file’s, with ‘.map’ appended.
-
-Input source maps are no supported by this plugin at this time.
-
