@@ -20,6 +20,10 @@ gulp.task('compress', function() {
 
 	Pass `false` to skip mangling names.
 
+  `cache`
+
+  Pass `true` to cache the processed output (including sourceMap). Caching is based on the file contents and the passed options object.
+
 - `output`
 
 	Pass an object if you wish to specify additional [output
