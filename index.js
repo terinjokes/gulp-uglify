@@ -3,9 +3,14 @@ var through = require('through2'),
 	uglify = require('uglify-js'),
 	merge = require('deepmerge'),
 	Vinyl = require('vinyl'),
+	cache = require('memory-cache'),
 	uglifyError = require('./lib/error.js');
 
 module.exports = function(opt) {
+
+	function objectIsEqual(a, b) {
+		return JSON.stringify(a) === JSON.stringify(b);
+	}
 
 	function minify(file, encoding, callback) {
 		/*jshint validthis:true */
@@ -24,8 +29,7 @@ module.exports = function(opt) {
 			output: {}
 		});
 
-		var mangled,
-			map,
+		var map,
 			sourceMap;
 
 		if (options.outSourceMap === true) {
@@ -42,9 +46,35 @@ module.exports = function(opt) {
 		}
 
 		try {
-			mangled = uglify.minify(String(file.contents), options);
-			file.contents = new Buffer(mangled.code);
+			var rawContents = String(file.contents);
+			var code,
+					cached;
+			if (options.cache &&
+					(cached = cache.get(file.path)) &&
+					cached.raw === rawContents &&
+					objectIsEqual(cached.options, opt)) {
+
+				// cache hit
+				code = cached.mangled;
+				sourceMap = cached.map;
+			} else {
+				var mangled = uglify.minify(rawContents, options);
+				code = mangled.code;
+				sourceMap = mangled.map;
+
+				if (options.cache) {
+					cache.put(file.path, {
+						raw: rawContents,
+						mangled: code,
+						map: sourceMap,
+						options: opt
+					});
+				}
+			}
+
+			file.contents = new Buffer(code);
 			this.push(file);
+
 		} catch (e) {
 			console.warn('Error caught from uglify: ' + e.message + ' in ' + file.path + '. Returning unminifed code');
 			this.push(file);
@@ -52,7 +82,7 @@ module.exports = function(opt) {
 		}
 
 		if (options.outSourceMap) {
-			sourceMap = JSON.parse(mangled.map);
+			sourceMap = JSON.parse(sourceMap);
 			sourceMap.sources = [ file.relative ];
 			map = new Vinyl({
 				cwd: file.cwd,
