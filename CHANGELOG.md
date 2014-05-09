@@ -1,11 +1,12 @@
 # gulp-uglify changelog
 
-## Development (
+## 0.3.0
 
 - Removed support for old style source maps
 - Added support for gulp-sourcemap
 - Updated tape development dependency
 - Dropped support for Node 0.9
+- UglifyJS errors are no longer swallowed
 
 ## 0.2.1
 
