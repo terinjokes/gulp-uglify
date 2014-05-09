@@ -16,7 +16,7 @@ var testFile1 = new Vinyl({
 });
 
 test('should emit error for stream files', function(t) {
-	t.plan(3);
+	t.plan(6);
 
 	var stream = gulpUglify();
 
@@ -28,6 +28,9 @@ test('should emit error for stream files', function(t) {
 			t.pass('emitted error');
 			t.ok(e instanceof PluginError, 'error is a PluginError');
 			t.equal(e.plugin, 'gulp-uglify', 'error is from gulp-uglify');
+			t.equal(e.fileName, testFile1.path, 'error reports the correct file');
+			t.ok(e.stack, 'error has a stack');
+			t.false(e.showStack, 'error is configured to not print stack');
 		});
 
 	stream.write(testFile1);

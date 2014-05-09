@@ -3,7 +3,7 @@ var test = require('tape'),
 		Vinyl = require('vinyl'),
 		gulpUglify = require('../');
 	
-var testContentsInput = 'function errorFunction(error) {';
+var testContentsInput = 'function errorFunction(error)\n{';
 
 var testFile1 = new Vinyl({
 	cwd: "/home/terin/broken-promises/",
@@ -12,21 +12,22 @@ var testFile1 = new Vinyl({
 	contents: new Buffer(testContentsInput)
 });
 
-test('should preserve files in error', function(t) {
-	t.plan(7);
+test('should report files in error', function(t) {
+	t.plan(6);
 
 	var stream = gulpUglify();
 
-	stream.on('data', function(newFile) {
-		t.ok(newFile, 'emits a file');
-		t.ok(newFile.path, 'file has a path');
-		t.ok(newFile.relative, 'file has relative path information');
-		t.ok(newFile.contents, 'file has contents');
+	stream.on('data', function() {
+		t.fail('we shouldn\'t have gotten here');
+	});
 
-		t.ok(newFile instanceof Vinyl, 'file is Vinyl');
-		t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
-
-		t.equals(String(newFile.contents), testContentsInput);
+	stream.on('error', function(e) {
+		t.ok(e instanceof Error, 'argument should be of type error');
+		t.equal(e.plugin, 'gulp-uglify', 'error is from gulp-uglify');
+		t.equal(e.fileName, testFile1.path, 'error reports correct file name');
+		t.equal(e.lineNumber, 2, 'error reports correct line number');
+		t.ok(e.stack, 'error has a stack');
+		t.false(e.showStack, 'error is configured to not print the stack');
 	});
 
 	stream.write(testFile1);

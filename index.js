@@ -15,7 +15,10 @@ module.exports = function(opt) {
 		}
 
 		if (file.isStream()) {
-			return callback(uglifyError('Streaming not supported'));
+			return callback(uglifyError('Streaming not supported', {
+				fileName: file.path,
+				showStack: false
+			}));
 		}
 
 		var options = merge(opt || {}, {
@@ -45,9 +48,12 @@ module.exports = function(opt) {
 			mangled = uglify.minify(String(file.contents), options);
 			file.contents = new Buffer(mangled.code);
 		} catch (e) {
-			console.warn('Error caught from uglify: ' + e.message + ' in ' + file.path + '. Returning unminifed code');
-			this.push(file);
-			return callback();
+			return callback(uglifyError(e.message, {
+				fileName: file.path,
+				lineNumber: e.line,
+				stack: e.stack,
+				showStack: false
+			}));
 		}
 
 		if (file.sourceMap) {
