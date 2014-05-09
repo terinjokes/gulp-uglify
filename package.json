@@ -11,7 +11,11 @@
     "uglify-js": "~2.4.6"
   },
   "devDependencies": {
+    "argg": "0.0.1",
+    "codeclimate-test-reporter": "0.0.3",
     "inline-source-map": "^0.3.0",
+    "istanbul": "^0.2.8",
+    "rimraf": "^2.2.8",
     "tape": "^2.12.3",
     "vinyl": "~0.2.3"
   },
@@ -26,6 +30,10 @@
   "main": "index.js",
   "repository": "https://github.com/terinjokes/gulp-uglify.git",
   "scripts": {
-    "test": "tape test/*.js"
+    "codeclimate": "cat ./coverage/lcov.info|codeclimate",
+    "coverage": "istanbul cover node_modules/argg test/*.js --report lcovonly",
+    "rm": "rimraf ./coverage",
+    "test": "npm run coverage && npm run rm",
+    "test-report": "npm run coverage && npm run codeclimate && npm run rm"
   }
 }
