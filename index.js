@@ -45,9 +45,17 @@ module.exports = function(opt) {
 			mangled = uglify.minify(String(file.contents), options);
 			file.contents = new Buffer(mangled.code);
 		} catch (e) {
-			console.warn('Error caught from uglify: ' + e.message + ' in ' + file.path + '. Returning unminifed code');
-			this.push(file);
-			return callback();
+			if(options.swallowErrors === false) {
+				return callback(uglifyError({
+					message:e.message,
+					fileName: file.path,
+					lineNumber: e.line
+				}));
+			} else {
+				console.warn('Error caught from uglify: ' + e.message + ' in ' + file.path + '. Returning unminifed code');
+				this.push(file);
+				return callback();
+			}
 		}
 
 		if (file.sourceMap) {
