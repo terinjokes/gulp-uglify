@@ -28,6 +28,7 @@ module.exports = function(opt) {
 
 		if (file.sourceMap) {
 			options.outSourceMap = file.relative;
+			options.inSourceMap = file.sourceMap;
 			originalSourceMap = file.sourceMap;
 		}
 
