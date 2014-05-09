@@ -3,6 +3,7 @@
   "description": "Minify files with UglifyJS.",
   "version": "0.2.1",
   "author": "Terin Stock <terinjokes@gmail.com>",
+  "bugs": "https://github.com/terinjokes/gulp-uglify/issues",
   "dependencies": {
     "deepmerge": "~0.2.7",
     "gulp-util": "~2.2.14",
@@ -11,7 +12,8 @@
     "vinyl": "~0.2.3"
   },
   "devDependencies": {
-    "tape": "~2.4.2"
+    "inline-source-map": "^0.3.0",
+    "tape": "^2.12.3"
   },
   "engines": {
     "node": ">= 0.9"

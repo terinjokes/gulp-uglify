@@ -2,7 +2,6 @@
 var through = require('through2'),
 	uglify = require('uglify-js'),
 	merge = require('deepmerge'),
-	Vinyl = require('vinyl'),
 	uglifyError = require('./lib/error.js');
 
 module.exports = function(opt) {
@@ -25,11 +24,12 @@ module.exports = function(opt) {
 		});
 
 		var mangled,
-			map,
-			sourceMap;
+			originalSourceMap;
 
-		if (options.outSourceMap === true) {
-			options.outSourceMap = file.relative + '.map';
+		if (file.sourceMap) {
+			options.outSourceMap = file.relative;
+			options.inSourceMap = file.sourceMap;
+			originalSourceMap = file.sourceMap;
 		}
 
 		if (options.preserveComments === 'all') {
@@ -44,24 +44,19 @@ module.exports = function(opt) {
 		try {
 			mangled = uglify.minify(String(file.contents), options);
 			file.contents = new Buffer(mangled.code);
-			this.push(file);
 		} catch (e) {
 			console.warn('Error caught from uglify: ' + e.message + ' in ' + file.path + '. Returning unminifed code');
 			this.push(file);
 			return callback();
 		}
 
-		if (options.outSourceMap) {
-			sourceMap = JSON.parse(mangled.map);
-			sourceMap.sources = [ file.relative ];
-			map = new Vinyl({
-				cwd: file.cwd,
-				base: file.base,
-				path: file.path + '.map',
-				contents: new Buffer(JSON.stringify(sourceMap))
-			});
-			this.push(map);
+		if (file.sourceMap) {
+			file.sourceMap = JSON.parse(mangled.map);
+			file.sourceMap.sourcesContent = originalSourceMap.sourcesContent;
+			file.sourceMap.sources = originalSourceMap.sources;
 		}
+
+		this.push(file);
 
 		callback();
 	}
