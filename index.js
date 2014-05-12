@@ -28,6 +28,19 @@ module.exports = function(opt) {
 			map,
 			sourceMap;
 
+		if (options.inSourceMap === true) {
+			var re = /\s*\/\/(?:@|#) sourceMappingURL=data:application\/json;base64,(\S*)$/m
+			, srcMap = String(file.contents).match(re);
+
+			if (!srcMap) {
+				console.warn('No inline source map found in file, ignoring.');
+				options.inSourceMap = null;
+			} else {
+				srcMap = new Buffer(srcMap[1], 'base64').toString('binary');
+				options.inSourceMap = JSON.parse(srcMap);
+			}
+		}
+
 		if (options.outSourceMap === true) {
 			options.outSourceMap = file.relative + '.map';
 		}
@@ -53,7 +66,7 @@ module.exports = function(opt) {
 
 		if (options.outSourceMap) {
 			sourceMap = JSON.parse(mangled.map);
-			sourceMap.sources = [ file.relative ];
+			sourceMap.file = file.relative;
 			map = new Vinyl({
 				cwd: file.cwd,
 				base: file.base,
