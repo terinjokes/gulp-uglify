@@ -77,5 +77,6 @@ You can have UglifyJS’s generated source maps emitted on the stream by passing
 `true` for the `outSourceMap` option. The file object’s path will be based on
 the input file’s, with ‘.map’ appended.
 
-Input source maps are no supported by this plugin at this time.
-
+Inline input source maps (e.g. from Browserify's debug mode) are supported by
+passing `inSourceMap: true`.  Other input source maps are not supported by this
+plugin at this time.
