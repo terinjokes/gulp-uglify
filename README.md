@@ -2,6 +2,12 @@
 
 > Minify JavaScript with UglifyJS2.
 
+## Installation
+
+Install package with NPM and add it to your development dependencies:
+
+`npm install --save-dev gulp-uglify`
+
 ## Usage
 
 ```javascript
