@@ -2,7 +2,8 @@
 var through = require('through2'),
 	uglify = require('uglify-js'),
 	merge = require('deepmerge'),
-	uglifyError = require('./lib/error.js');
+	uglifyError = require('./lib/error.js'),
+	reSourceMapComment = /\n\/\/# sourceMappingURL=.+?$/;
 
 module.exports = function(opt) {
 
@@ -46,7 +47,7 @@ module.exports = function(opt) {
 
 		try {
 			mangled = uglify.minify(String(file.contents), options);
-			file.contents = new Buffer(mangled.code);
+			file.contents = new Buffer(mangled.code.replace(reSourceMapComment, ''));
 		} catch (e) {
 			return callback(uglifyError(e.message, {
 				fileName: file.path,
