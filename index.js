@@ -11,8 +11,7 @@ module.exports = function(opt) {
 		/*jshint validthis:true */
 
 		if (file.isNull()) {
-			this.push(file);
-			return callback();
+			return callback(null, file);
 		}
 
 		if (file.isStream()) {
@@ -65,9 +64,7 @@ module.exports = function(opt) {
 			file.sourceMap.sources = originalSourceMap.sources;
 		}
 
-		this.push(file);
-
-		callback();
+		callback(null, file);
 	}
 
 	return through.obj(minify);
