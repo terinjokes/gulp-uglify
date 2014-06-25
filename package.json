@@ -5,10 +5,10 @@
   "author": "Terin Stock <terinjokes@gmail.com>",
   "bugs": "https://github.com/terinjokes/gulp-uglify/issues",
   "dependencies": {
-    "deepmerge": "~0.2.7",
-    "gulp-util": "~2.2.14",
+    "deepmerge": "^0.2.7",
+    "gulp-util": "^2.2.17",
     "through2": "^0.5.1",
-    "uglify-js": "~2.4.6"
+    "uglify-js": "^2.4.14"
   },
   "devDependencies": {
     "argg": "0.0.1",
