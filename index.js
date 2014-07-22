@@ -51,6 +51,9 @@ module.exports = function(opt) {
 			mangled = uglify.minify(String(file.contents), options);
 			file.contents = new Buffer(mangled.code.replace(reSourceMapComment, ''));
 		} catch (e) {
+			console.warn('Uglify Error: ' + e.message + ' \n in ' + file.path + (e.line && e.col ? ':' + e.line + ':' + e.col : ''));
+			showErrorInFile(e, file);
+
 			return callback(uglifyError(e.message, {
 				fileName: file.path,
 				lineNumber: e.line,
@@ -69,6 +72,33 @@ module.exports = function(opt) {
 
 		callback();
 	}
+
+	var lineOffsetSize = 10,
+		tabs = /\t/g,
+		SPACE = ' ';
+
+	// Outputs a snippet with the current error line and the line above it to spot the bug easily
+	function showErrorInFile(error, file) {
+		var line = error.line,
+			lineStr, lines;
+
+		if (line && error.col) {
+			lines = String(file.contents).split('\n');
+
+			if (line > 1) {
+				console.log(lines[error.line - 2].replace(tabs, SPACE));
+			}
+
+			lineStr = lines[error.line - 1];
+
+			if (lineStr) {
+				lineStr = lineStr.substr(Math.max(error.col - lineOffsetSize, 0), lineOffsetSize * 2);
+				console.log(lineStr.replace(tabs, SPACE));
+				console.log(Array(lineOffsetSize - 1 + error.col).join(SPACE) + '^');
+			}
+		}
+	}
+
 
 	return through.obj(minify);
 };
