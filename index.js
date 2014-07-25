@@ -94,7 +94,7 @@ module.exports = function(opt) {
 			if (lineStr) {
 				lineStr = lineStr.substr(Math.max(error.col - lineOffsetSize, 0), lineOffsetSize * 2);
 				console.log(lineStr.replace(tabs, SPACE));
-				console.log(Array(lineOffsetSize - 1 + error.col).join(SPACE) + '^');
+				console.log(Array(error.col).join('–') + '^');
 			}
 		}
 	}
