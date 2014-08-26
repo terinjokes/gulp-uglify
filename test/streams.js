@@ -34,6 +34,7 @@ test('should emit error for stream files', function(t) {
 		});
 
 	stream.write(testFile1);
+	stream.end();
 });
 
 function stringStream() {
