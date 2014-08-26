@@ -3,6 +3,7 @@ var through = require('through2'),
 	uglify = require('uglify-js'),
 	merge = require('deepmerge'),
 	PluginError = require('gulp-util/lib/PluginError'),
+	applySourceMap = require('vinyl-sourcemaps-apply'),
 	reSourceMapComment = /\n\/\/# sourceMappingURL=.+?$/,
 	pluginName = 'gulp-uglify';
 
@@ -59,15 +60,11 @@ module.exports = function(opt) {
 			}));
 		}
 
-		var originalSourceMap;
-
 		if (file.sourceMap) {
 			options = merge(options, {
 				outSourceMap: file.relative,
 				inSourceMap: file.sourceMap.mappings !== '' ? file.sourceMap : undefined
 			});
-
-			originalSourceMap = file.sourceMap;
 		}
 
 		minify(file, options, function(err, mangled) {
@@ -78,9 +75,7 @@ module.exports = function(opt) {
 			file.contents = mangled.code;
 
 			if (file.sourceMap) {
-				file.sourceMap = JSON.parse(mangled.map);
-				file.sourceMap.sourcesContent = originalSourceMap.sourcesContent;
-				file.sourceMap.sources = originalSourceMap.sources;
+				applySourceMap(file, mangled.map);
 			}
 
 			callback(null, file);
