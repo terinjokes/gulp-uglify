@@ -9,9 +9,9 @@ test('should preserve all comments', function(t) {
 
 	var testFile1 = new Vinyl({
 		cwd: "/home/terin/broken-promises/",
-			base: "/home/terin/broken-promises/test",
-			path: "/home/terin/broken-promises/test/test1.js",
-			contents: new Buffer('/* comment one *//*! comment two *//* comment three */')
+		base: "/home/terin/broken-promises/test",
+		path: "/home/terin/broken-promises/test/test1.js",
+		contents: new Buffer('/* comment one *//*! comment two *//* comment three */')
 	});
 
 	var stream = gulpUglify({ preserveComments: 'all' });
@@ -32,9 +32,9 @@ test('should preserve important comments', function(t) {
 
 	var testFile1 = new Vinyl({
 		cwd: "/home/terin/broken-promises/",
-			base: "/home/terin/broken-promises/test",
-			path: "/home/terin/broken-promises/test/test1.js",
-			contents: new Buffer('/* comment one *//*! comment two *//* comment three */')
+		base: "/home/terin/broken-promises/test",
+		path: "/home/terin/broken-promises/test/test1.js",
+		contents: new Buffer('/* comment one *//*! comment two *//* comment three */')
 	});
 
 	var stream = gulpUglify({ preserveComments: 'some' });
@@ -55,9 +55,9 @@ test('should preserve comments that fn returns true for', function(t) {
 
 	var testFile1 = new Vinyl({
 		cwd: "/home/terin/broken-promises/",
-			base: "/home/terin/broken-promises/test",
-			path: "/home/terin/broken-promises/test/test1.js",
-			contents: new Buffer('/* comment one *//*! comment two *//* comment three */')
+		base: "/home/terin/broken-promises/test",
+		path: "/home/terin/broken-promises/test/test1.js",
+		contents: new Buffer('/* comment one *//*! comment two *//* comment three */')
 	});
 
 	var stream = gulpUglify({
