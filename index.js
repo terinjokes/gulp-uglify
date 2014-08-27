@@ -6,14 +6,50 @@ var through = require('through2'),
 	reSourceMapComment = /\n\/\/# sourceMappingURL=.+?$/,
 	pluginName = 'gulp-uglify';
 
+function minify(file, options, cb) {
+	var mangled;
+
+	try {
+		mangled = uglify.minify(String(file.contents), options);
+		mangled.code = new Buffer(mangled.code.replace(reSourceMapComment, ''));
+		cb(null, mangled);
+	} catch (e) {
+		cb(new PluginError(pluginName, e.message || e.msg, {
+			fileName: file.path,
+			lineNumber: e.line,
+			stack: e.stack,
+			showStack: false
+		}));
+	}
+}
+
+function setup(opts) {
+	var options = merge(opts || {}, {
+		fromString: true,
+		output: {}
+	});
+
+	if (options.preserveComments === 'all') {
+		options.output.comments = true;
+	} else if (options.preserveComments === 'some') {
+		// preserve comments with directives or that start with a bang (!)
+		options.output.comments = /^!|@preserve|@license|@cc_on/i;
+	} else if (typeof options.preserveComments === 'function') {
+		options.output.comments = options.preserveComments;
+	}
+
+	return options;
+}
+
 module.exports = function(opt) {
 
-	function minify(file, encoding, callback) {
+	var options = setup(opt);
+
+	function uglify(file, encoding, callback) {
 		/*jshint validthis:true */
 
 		if (file.isNull()) {
-			this.push(file);
-			return callback();
+			return callback(null, file);
 		}
 
 		if (file.isStream()) {
@@ -23,53 +59,33 @@ module.exports = function(opt) {
 			}));
 		}
 
-		var options = merge(opt || {}, {
-			fromString: true,
-			output: {}
-		});
-
-		var mangled,
-			originalSourceMap;
+		var originalSourceMap;
 
 		if (file.sourceMap) {
-			options.outSourceMap = file.relative;
-			if (file.sourceMap.mappings !== '') {
-				options.inSourceMap = file.sourceMap;
-			}
+			options = merge(options, {
+				outSourceMap: file.relative,
+				inSourceMap: file.sourceMap.mappings !== '' ? file.sourceMap : undefined
+			});
+
 			originalSourceMap = file.sourceMap;
 		}
 
-		if (options.preserveComments === 'all') {
-			options.output.comments = true;
-		} else if (options.preserveComments === 'some') {
-			// preserve comments with directives or that start with a bang (!)
-			options.output.comments = /^!|@preserve|@license|@cc_on/i;
-		} else if (typeof options.preserveComments === 'function') {
-			options.output.comments = options.preserveComments;
-		}
+		minify(file, options, function(err, mangled) {
+			if (err) {
+				return callback(err);
+			}
+			
+			file.contents = mangled.code;
 
-		try {
-			mangled = uglify.minify(String(file.contents), options);
-			file.contents = new Buffer(mangled.code.replace(reSourceMapComment, ''));
-		} catch (e) {
-			return callback(new PluginError(pluginName, e.message || e.msg, {
-				fileName: file.path,
-				lineNumber: e.line,
-				stack: e.stack,
-				showStack: false
-			}));
-		}
+			if (file.sourceMap) {
+				file.sourceMap = JSON.parse(mangled.map);
+				file.sourceMap.sourcesContent = originalSourceMap.sourcesContent;
+				file.sourceMap.sources = originalSourceMap.sources;
+			}
 
-		if (file.sourceMap) {
-			file.sourceMap = JSON.parse(mangled.map);
-			file.sourceMap.sourcesContent = originalSourceMap.sourcesContent;
-			file.sourceMap.sources = originalSourceMap.sources;
-		}
-
-		this.push(file);
-
-		callback();
+			callback(null, file);
+		});
 	}
 
-	return through.obj(minify);
+	return through.obj(uglify);
 };
