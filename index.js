@@ -52,7 +52,7 @@ module.exports = function(opt) {
 			mangled = uglify.minify(String(file.contents), options);
 			file.contents = new Buffer(mangled.code.replace(reSourceMapComment, ''));
 		} catch (e) {
-			return callback(new PluginError(pluginName, e.message, {
+			return callback(new PluginError(pluginName, e.message || e.msg, {
 				fileName: file.path,
 				lineNumber: e.line,
 				stack: e.stack,
