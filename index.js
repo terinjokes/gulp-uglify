@@ -44,10 +44,10 @@ function setup(opts) {
 
 module.exports = function(opt) {
 
-	var options = setup(opt);
-
 	function uglify(file, encoding, callback) {
 		/*jshint validthis:true */
+
+		var options = setup(opt);
 
 		if (file.isNull()) {
 			return callback(null, file);
