@@ -61,10 +61,8 @@ module.exports = function(opt) {
 		}
 
 		if (file.sourceMap) {
-			options = merge(options, {
-				outSourceMap: file.relative,
-				inSourceMap: file.sourceMap.mappings !== '' ? file.sourceMap : undefined
-			});
+			options.outSourceMap = file.relative;
+			options.inSourceMap = file.sourceMap.mappings !== '' ? file.sourceMap : undefined;
 		}
 
 		minify(file, options, function(err, mangled) {
