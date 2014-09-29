@@ -13,6 +13,15 @@ function minify(file, options, cb) {
 	try {
 		mangled = uglify.minify(String(file.contents), options);
 		mangled.code = new Buffer(mangled.code.replace(reSourceMapComment, ''));
+
+		if (file.sourceMap) {
+			var json = JSON.parse(mangled.map);
+			if (Array.isArray(json.sources) && json.sources[0] === '?') {
+				json.sources = file.sourceMap.sources;
+			}
+			mangled.map = JSON.stringify(json);
+		}
+
 		cb(null, mangled);
 	} catch (e) {
 		cb(new PluginError(pluginName, e.message || e.msg, {
@@ -69,7 +78,7 @@ module.exports = function(opt) {
 			if (err) {
 				return callback(err);
 			}
-			
+
 			file.contents = mangled.code;
 
 			if (file.sourceMap) {

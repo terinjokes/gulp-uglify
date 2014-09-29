@@ -13,7 +13,7 @@ var testContents2Expected = uglifyjs.minify(testContents2Input, {fromString: tru
 var testConcatExpected = uglifyjs.minify(testContents1Expected + testContents2Input, {fromString: true}).code;
 
 test('should minify files', function(t) {
-	t.plan(11);
+	t.plan(12);
 
 	var testFile1 = new Vinyl({
 		cwd: "/home/terin/broken-promises/",
@@ -38,6 +38,7 @@ test('should minify files', function(t) {
 		t.ok(newFile.sourceMap, 'has a source map');
 		t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
 		t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
+		t.deepEquals(newFile.sourceMap.sources, ['test1.js'], 'sources array has the input');
 		t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
 		t.ok(newFile.sourceMap.mappings, 'source map has mappings');
 	});
