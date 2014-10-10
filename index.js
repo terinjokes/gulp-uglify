@@ -70,13 +70,14 @@ module.exports = function(opt) {
 				return callback(err);
 			}
 			
-			file.contents = mangled.code;
+			var result = file.clone();
+			result.contents = mangled.code;
 
-			if (file.sourceMap) {
-				applySourceMap(file, mangled.map);
+			if (result.sourceMap) {
+				applySourceMap(result, mangled.map);
 			}
 
-			callback(null, file);
+			callback(null, result);
 		});
 	}
 
