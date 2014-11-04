@@ -48,6 +48,7 @@ module.exports = function(opt) {
 		/*jshint validthis:true */
 
 		var options = setup(opt);
+		var _this = this;
 
 		if (file.isNull()) {
 			return callback(null, file);
@@ -67,16 +68,17 @@ module.exports = function(opt) {
 
 		minify(file, options, function(err, mangled) {
 			if (err) {
-				return callback(err);
-			}
-			
-			file.contents = mangled.code;
+				_this.emit('error', err);
+			} else {
+				file.contents = mangled.code;
 
-			if (file.sourceMap) {
-				applySourceMap(file, mangled.map);
+				if (file.sourceMap) {
+					applySourceMap(file, mangled.map);
+				}
+				_this.push(file)
 			}
 
-			callback(null, file);
+			callback();
 		});
 	}
 
