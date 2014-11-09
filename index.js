@@ -9,19 +9,21 @@ var through = require('through2'),
 
 function minify(file, options, cb) {
 	var mangled;
+	var error = null;
 
 	try {
 		mangled = uglify.minify(String(file.contents), options);
 		mangled.code = new Buffer(mangled.code.replace(reSourceMapComment, ''));
-		cb(null, mangled);
 	} catch (e) {
-		cb(new PluginError(pluginName, e.message || e.msg, {
+		error = new PluginError(pluginName, e.message || e.msg, {
 			fileName: file.path,
 			lineNumber: e.line,
 			stack: e.stack,
 			showStack: false
-		}));
+		});
 	}
+
+	return cb(error, mangled);
 }
 
 function setup(opts) {
@@ -75,7 +77,7 @@ module.exports = function(opt) {
 				if (file.sourceMap) {
 					applySourceMap(file, mangled.map);
 				}
-				_this.push(file)
+				_this.push(file);
 			}
 
 			callback();
