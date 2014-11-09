@@ -9,19 +9,21 @@ var through = require('through2'),
 
 function minify(file, options, cb) {
 	var mangled;
+	var error = null;
 
 	try {
 		mangled = uglify.minify(String(file.contents), options);
 		mangled.code = new Buffer(mangled.code.replace(reSourceMapComment, ''));
-		cb(null, mangled);
 	} catch (e) {
-		cb(new PluginError(pluginName, e.message || e.msg, {
+		error = new PluginError(pluginName, e.message || e.msg, {
 			fileName: file.path,
 			lineNumber: e.line,
 			stack: e.stack,
 			showStack: false
-		}));
+		});
 	}
+
+	return cb(error, mangled);
 }
 
 function setup(opts) {
@@ -48,6 +50,7 @@ module.exports = function(opt) {
 		/*jshint validthis:true */
 
 		var options = setup(opt);
+		var _this = this;
 
 		if (file.isNull()) {
 			return callback(null, file);
@@ -67,16 +70,17 @@ module.exports = function(opt) {
 
 		minify(file, options, function(err, mangled) {
 			if (err) {
-				return callback(err);
-			}
-			
-			file.contents = mangled.code;
+				_this.emit('error', err);
+			} else {
+				file.contents = mangled.code;
 
-			if (file.sourceMap) {
-				applySourceMap(file, mangled.map);
+				if (file.sourceMap) {
+					applySourceMap(file, mangled.map);
+				}
+				_this.push(file);
 			}
 
-			callback(null, file);
+			callback();
 		});
 	}
 
