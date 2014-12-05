@@ -57,7 +57,7 @@ test('shouldn\'t blow up when given output options', function(t) {
 
 	stream.on('error', function(e) {
 		t.ok(e instanceof Error, 'argument should be of type error');
-		t.equals(e.message, '`exportAll` is not a supported option');
+		t.equals(e.message, testFile2.path + ': `exportAll` is not a supported option');
 		t.equal(e.plugin, 'gulp-uglify', 'error is from gulp-uglify');
 		t.equal(e.fileName, testFile2.path, 'error reports correct file name');
 		t.false(e.showStack, 'error is configured to not print the stack');
