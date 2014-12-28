@@ -70,7 +70,6 @@ module.exports = function(opt) {
 
 		if (file.sourceMap) {
 			options.outSourceMap = file.relative;
-			options.inSourceMap = file.sourceMap.mappings !== '' ? file.sourceMap : undefined;
 		}
 
 		var mangled = minify(file, options);
@@ -82,7 +81,9 @@ module.exports = function(opt) {
 		file.contents = mangled.code;
 
 		if (file.sourceMap) {
-			applySourceMap(file, mangled.map);
+			var sourceMap = JSON.parse(mangled.map);
+			sourceMap.sources = [file.relative];
+			applySourceMap(file, sourceMap);
 		}
 
 		callback(null, file);
