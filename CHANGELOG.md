@@ -1,5 +1,10 @@
 # gulp-uglify changelog
 
+## 1.1.0
+
+- Fix sources path in source maps (thanks @floridoo)
+- Update UglifyJS to 2.4.16 (thanks @tschaub)
+
 ## 1.0.0
 
 - Handle cases where UglifyJS uses e.msg instead of e.message for error codes. Fixes #51.
