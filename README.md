@@ -58,6 +58,19 @@ gulp.task('compress', function() {
 		current node and the current comment and are expected to return either
 		`true` or `false`.
 
+- `uglify`
+	If you want to use a different version of uglify, you can pass your own instance of uglify as the uglify option:
+
+	```javascript
+	var uglify = require('gulp-uglify');
+
+	gulp.task('compress', function() {
+	  gulp.src('lib/*.js')
+	    .pipe(uglify({ uglify: require('uglify-js') }))
+	    .pipe(gulp.dest('dist'))
+	});
+	```
+
 You can also pass the `uglify` function any of the options [listed
 here](https://github.com/mishoo/UglifyJS2#the-simple-way) to modify
 UglifyJS's behavior.

@@ -2,7 +2,7 @@
 var test = require('tape'),
 		Vinyl = require('vinyl'),
 		gulpUglify = require('../');
-	
+
 var testContentsInput = 'function errorFunction(error)\n{';
 var testOkContentsInput = '"use strict"; (function(console, first, second) { console.log(first + second) }(5, 10))';
 
@@ -65,4 +65,21 @@ test('shouldn\'t blow up when given output options', function(t) {
 
 	stream.write(testFile2);
 	stream.end();
+});
+
+test('should fail with misconfigured uglify option', function(t) {
+  t.plan(1);
+
+  var stream = gulpUglify({ uglify: {} });
+
+	stream.on('data', function() {
+		t.fail('we shouldn\'t have gotten here');
+	});
+
+	stream.on('error', function(e) {
+		t.ok(e instanceof Error, 'argument should be of type error');
+	});
+
+  stream.write(testFile1);
+  stream.end();
 });
