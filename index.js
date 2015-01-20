@@ -1,7 +1,8 @@
 'use strict';
-var through = require('through2'),
-	uglify = require('uglify-js'),
+var uglify = require('uglify-js'),
 	merge = require('deepmerge'),
+	transform = require('parallel-transform'),
+	cpus = require('os').cpus().length,
 	PluginError = require('gulp-util/lib/PluginError'),
 	applySourceMap = require('vinyl-sourcemaps-apply'),
 	reSourceMapComment = /\n\/\/# sourceMappingURL=.+?$/,
@@ -57,7 +58,7 @@ function createError(file, err) {
 
 module.exports = function(opt) {
 
-	function uglify(file, encoding, callback) {
+	function uglify(file, callback) {
 		var options = setup(opt);
 
 		if (file.isNull()) {
@@ -72,22 +73,24 @@ module.exports = function(opt) {
 			options.outSourceMap = file.relative;
 		}
 
-		var mangled = minify(file, options);
+		setImmediate(function(){
+			var mangled = minify(file, options);
 
-		if (mangled instanceof PluginError) {
-			return callback(mangled);
-		}
+			if (mangled instanceof PluginError) {
+				return callback(mangled);
+			}
 
-		file.contents = mangled.code;
+			file.contents = mangled.code;
 
-		if (file.sourceMap) {
-			var sourceMap = JSON.parse(mangled.map);
-			sourceMap.sources = [file.relative];
-			applySourceMap(file, sourceMap);
-		}
+			if (file.sourceMap) {
+				var sourceMap = JSON.parse(mangled.map);
+				sourceMap.sources = [file.relative];
+				applySourceMap(file, sourceMap);
+			}
 
-		callback(null, file);
+			callback(null, file);
+		});
 	}
 
-	return through.obj(uglify);
+	return transform(cpus || opts.parallism, uglify);
 };
