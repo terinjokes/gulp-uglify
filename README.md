@@ -14,9 +14,9 @@ Install package with NPM and add it to your development dependencies:
 var uglify = require('gulp-uglify');
 
 gulp.task('compress', function() {
-  gulp.src('lib/*.js')
+  return gulp.src('lib/*.js')
     .pipe(uglify())
-    .pipe(gulp.dest('dist'))
+    .pipe(gulp.dest('dist'));
 });
 ```
 
