@@ -3,7 +3,7 @@ var test = require('tape'),
 		Vinyl = require('vinyl'),
 		gulpUglify = require('../'),
 		uglifyjs = require('uglify-js');
-	
+
 var testContentsInput = '"use strict"; (function(console, first, second) { console.log(first + second) }(5, 10))';
 var testContentsExpected = uglifyjs.minify(testContentsInput, {fromString: true}).code;
 
@@ -33,4 +33,17 @@ test('should minify files', function(t) {
 
 	stream.write(testFile1);
 	stream.end();
+});
+
+test('should minify files with uglify option', function(t) {
+  t.plan(1);
+
+  var stream = gulpUglify({ uglify: uglifyjs });
+
+  stream.on('data', function(newFile) {
+    t.equals(String(newFile.contents), testContentsExpected);
+  });
+
+  stream.write(testFile1);
+  stream.end();
 });

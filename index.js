@@ -1,6 +1,5 @@
 'use strict';
 var through = require('through2'),
-	uglify = require('uglify-js'),
 	merge = require('deepmerge'),
 	PluginError = require('gulp-util/lib/PluginError'),
 	applySourceMap = require('vinyl-sourcemaps-apply'),
@@ -11,7 +10,7 @@ function minify(file, options) {
 	var mangled;
 
 	try {
-		mangled = uglify.minify(String(file.contents), options);
+		mangled = options.uglify.minify(String(file.contents), options);
 		mangled.code = new Buffer(mangled.code.replace(reSourceMapComment, ''));
 		return mangled;
 	} catch (e) {
@@ -24,6 +23,8 @@ function setup(opts) {
 		fromString: true,
 		output: {}
 	});
+
+	options.uglify = options.uglify || require('uglify-js');
 
 	if (options.preserveComments === 'all') {
 		options.output.comments = true;
