@@ -34,6 +34,16 @@ function setup(opts) {
 		options.output.comments = options.preserveComments;
 	}
 
+	if (options.quoteStyle === 'single' || options.quoteStyle === 1) {
+		options.output.quote_style = 1;
+	} else if (options.quoteStyle === 'double' || options.quoteStyle === 2) {
+		options.output.quote_style = 2;
+	} else if (options.quoteStyle === 'original' || options.quoteStyle === 3) {
+		options.output.quote_style = 3;
+	} else {
+		options.output.quote_style = 0;
+	}
+
 	return options;
 }
 
