@@ -58,6 +58,28 @@ gulp.task('compress', function() {
 		current node and the current comment and are expected to return either
 		`true` or `false`.
 
+- `quoteStyle`
+
+	A convenience option for `options.output.quote_style`. Defaults to using
+  single or double quotes such as to minimize the number of bytes.
+
+	- `default` or `0`
+
+    Use single or double quotes such as to minimize the number of bytes (prefers
+    double quotes when both will do); this is the previous behavior.
+
+	- `single` or `1`
+
+    Always use single quotes
+
+	- `double` or `2`
+
+    Always use double quotes
+
+  - `original` or `3`
+
+    Always use the original quotes
+
 You can also pass the `uglify` function any of the options [listed
 here](https://github.com/mishoo/UglifyJS2#the-simple-way) to modify
 UglifyJS's behavior.
