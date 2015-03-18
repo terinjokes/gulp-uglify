@@ -61,3 +61,15 @@ gulp.task('compress', function() {
 You can also pass the `uglify` function any of the options [listed
 here](https://github.com/mishoo/UglifyJS2#the-simple-way) to modify
 UglifyJS's behavior.
+
+## Errors
+
+`gulp-uglify` emits an 'error' event if it is unable to minify a specific file.
+Wherever popssible, the PluginError object will contain the following properties:
+
+- `fileName`
+- `lineNumber`
+- `message`
+
+To handle errors across your entire pipeline, see the
+[gulp](https://github.com/gulpjs/gulp/blob/master/docs/recipes/combining-streams-to-handle-errors.md#combining-streams-to-handle-errors) documentation.
