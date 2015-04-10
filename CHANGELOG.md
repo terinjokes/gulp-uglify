@@ -1,5 +1,9 @@
 # gulp-uglify changelog
 
+## 1.2.0
+
+- Update dependencies, including UglifyJS to 2.4.19.
+
 ## 1.1.0
 
 - Fix sources path in source maps (thanks @floridoo)
