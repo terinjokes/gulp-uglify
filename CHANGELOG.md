@@ -1,5 +1,9 @@
 # gulp-uglify changelog
 
+## 1.2.1
+
+- Update UglifyJS to 2.4.20 since [v2.4.18 introduced a breaking change](https://github.com/mishoo/UglifyJS2/issues/673).
+
 ## 1.2.0
 
 - Update dependencies, including UglifyJS to 2.4.19.
