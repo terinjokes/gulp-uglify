@@ -73,6 +73,7 @@ module.exports = function(opts, uglify) {
     }, createError.bind(null, file));
 
     if (mangled instanceof PluginError) {
+      if(options.errorHandler) { return options.errorHandler(mangled, file, callback); } // If custom error handler was passed, use it
       return callback(mangled);
     }
 
