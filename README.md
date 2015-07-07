@@ -65,7 +65,7 @@ UglifyJS's behavior.
 ## Errors
 
 `gulp-uglify` emits an 'error' event if it is unable to minify a specific file.
-Wherever popssible, the PluginError object will contain the following properties:
+Wherever possible, the PluginError object will contain the following properties:
 
 - `fileName`
 - `lineNumber`
