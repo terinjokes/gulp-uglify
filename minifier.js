@@ -17,6 +17,7 @@ function trycatch(fn, handle) {
 function setup(opts) {
   var options = deap({}, opts, {
     fromString: true,
+		banner: '/* @date:' + '2015-08-20' + ' */',
     output: {}
   });
 
@@ -69,6 +70,10 @@ module.exports = function(opts, uglify) {
     var mangled = trycatch(function() {
       var m = uglify.minify(String(file.contents), options);
       m.code = new Buffer(m.code.replace(reSourceMapComment, ''));
+
+			if (file.sourceMap) {
+				m = options.banner + m;
+			}
       return m;
     }, createError.bind(null, file));
 
