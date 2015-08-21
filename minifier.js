@@ -25,7 +25,6 @@ function setup(opts) {
     output: {}
   }, opts);
 
-  console.log(options);
   if (options.preserveComments === 'all') {
     options.output.comments = true;
   } else if (options.preserveComments === 'some') {
