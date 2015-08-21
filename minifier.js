@@ -15,15 +15,17 @@ function trycatch(fn, handle) {
 }
 // Converts \r\n to \n
 function normalizeLf(string) {
-	return string.replace(/\r\n/g, '\n');
+  return string.replace(/\r\n/g, '\n');
 }
 
 function setup(opts) {
-  var options = deap({}, opts, {
+  var options = deap({}, {
     fromString: true,
+    banner: '',
     output: {}
-  });
+  }, opts);
 
+  console.log(options);
   if (options.preserveComments === 'all') {
     options.output.comments = true;
   } else if (options.preserveComments === 'some') {
@@ -73,9 +75,9 @@ module.exports = function(opts, uglify) {
     var mangled = trycatch(function() {
       var m = uglify.minify(String(file.contents), options);
 
-			if (!file.sourceMap) {
-				m.code = normalizeLf(options.banner) + m.code;
-			}
+      if (!file.sourceMap) {
+        m.code = normalizeLf(options.banner) + m.code;
+      }
 
       m.code = new Buffer(m.code.replace(reSourceMapComment, ''));
 
