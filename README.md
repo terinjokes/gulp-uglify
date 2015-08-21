@@ -59,7 +59,11 @@ gulp.task('compress', function() {
 		`true` or `false`.
 
 - `banner`
+
   This string will be prepended to the minified output.
+  
+  eg:
+  
   ```javascript
     var gulp    = require('gulp');
     var config  = require('../config').production;
@@ -67,7 +71,7 @@ gulp.task('compress', function() {
     var uglify = require('gulp-uglify');
     var gutil = require('gulp-util');
     
-    var today = gutil.date(undefined, 'yyyy-mm-dd HH:MM');
+    var today = gutil.date('yyyy-mm-dd HH:MM');
     
     gulp.task('uglifyJs', ['browserify'], function() {
       return gulp.src(config.jsSrc)
