@@ -58,6 +58,26 @@ gulp.task('compress', function() {
 		current node and the current comment and are expected to return either
 		`true` or `false`.
 
+- `banner`
+  This string will be prepended to the minified output.
+  ```javascript
+    var gulp    = require('gulp');
+    var config  = require('../config').production;
+    var size    = require('gulp-filesize');
+    var uglify = require('gulp-uglify');
+    var gutil = require('gulp-util');
+    
+    var today = gutil.date(undefined, 'yyyy-mm-dd HH:MM');
+    
+    gulp.task('uglifyJs', ['browserify'], function() {
+      return gulp.src(config.jsSrc)
+        .pipe(uglify({compress: {drop_console: true}, banner: '/* @date:' + today + ' */\n'}))
+        .pipe(gulp.dest(config.jsDest))
+        .pipe(size());
+    });
+  ```
+  
+  
 You can also pass the `uglify` function any of the options [listed
 here](https://github.com/mishoo/UglifyJS2#the-simple-way) to modify
 UglifyJS's behavior.
