@@ -75,7 +75,7 @@ gulp.task('compress', function() {
     
     gulp.task('uglifyJs', ['browserify'], function() {
       return gulp.src(config.jsSrc)
-        .pipe(uglify({compress: {drop_console: true}, banner: '/* @date:' + today + ' */\n'}))
+        .pipe(uglify({compress: {drop_console: true}, banner: '/* @date:'+ config.v + ' ' + today + ' */\n'}))
         .pipe(gulp.dest(config.jsDest))
         .pipe(size());
     });
