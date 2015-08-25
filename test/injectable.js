@@ -40,6 +40,7 @@ test('should minify files', function(t) {
     t.equals(uglifyjs.minify.$args[0], testContentsInput, 'stub argument 0 was the expected input');
     t.deepEqual(uglifyjs.minify.$args[1], {
       fromString: true,
+			banner:'',
       output: {},
       injecting: true
     }, 'stub argument 1 was the expected options');
