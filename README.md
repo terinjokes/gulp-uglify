@@ -58,6 +58,21 @@ gulp.task('compress', function() {
 		current node and the current comment and are expected to return either
 		`true` or `false`.
 
+- `errorHandler`
+
+Pass custom function which is used to handle errors. Gets as parameters
+the `error`, `file` and `callback`. Callback expects to have `error` and `file`
+arguments passed to it.
+
+Example of just logging errors:
+```js
+errorHandler: function(err, file, callback) {
+   console.log('Uglify error:', err.message);
+   callback(null, file);
+}
+```
+
+
 You can also pass the `uglify` function any of the options [listed
 here](https://github.com/mishoo/UglifyJS2#the-simple-way) to modify
 UglifyJS's behavior.

@@ -66,3 +66,30 @@ test('shouldn\'t blow up when given output options', function(t) {
 	stream.write(testFile2);
 	stream.end();
 });
+
+test('should complete with custom errorHandler that ignores errors', function(t) {
+	t.plan(7);
+
+	var stream = gulpUglify({
+		errorHandler: function(err, file, callback) {
+      console.log('  Uglify error: ', err.message);
+      callback(null, file);
+    }
+	});
+
+  stream.on('data', function(newFile) {
+		t.ok(newFile, 'emits a file');
+		t.ok(newFile.path, 'file has a path');
+		t.ok(newFile.relative, 'file has relative path information');
+		t.ok(newFile.contents, 'file has contents');
+
+		t.ok(newFile instanceof Vinyl, 'file is Vinyl');
+		t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+
+		t.equals(String(newFile.contents), testContentsInput);
+	});
+
+	stream.write(testFile1);
+	stream.end();
+});
+
