@@ -27,7 +27,7 @@ test('should preserve all comments', function(t) {
 	stream.end();
 });
 
-test('should preserve important comments', function(t) {
+test('should preserve some comments', function(t) {
 	t.plan(3);
 
 	var testFile1 = new Vinyl({
@@ -38,6 +38,29 @@ test('should preserve important comments', function(t) {
 	});
 
 	var stream = gulpUglify({ preserveComments: 'some' });
+
+	stream.on('data', function(newFile) {
+		var contents = newFile.contents.toString();
+		t.false(/one/.test(contents), 'does not have comment one');
+		t.ok(/two/.test(contents), 'has comment two');
+		t.false(/three/.test(contents), 'does not have comment three');
+	});
+
+	stream.write(testFile1);
+	stream.end();
+});
+
+test('should preserve license comments', function(t) {
+	t.plan(3);
+
+	var testFile1 = new Vinyl({
+		cwd: "/home/terin/broken-promises/",
+		base: "/home/terin/broken-promises/test",
+		path: "/home/terin/broken-promises/test/test1.js",
+		contents: new Buffer('"use strict";\nfunction foobar(){}\n/* comment one */\n/* comment two MIT */\nfunction itsatrap(){}\n/* comment three */')
+	});
+
+	var stream = gulpUglify({ preserveComments: 'license' });
 
 	stream.on('data', function(newFile) {
 		var contents = newFile.contents.toString();

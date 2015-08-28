@@ -3,6 +3,7 @@ var through = require('through2');
 var deap = require('deap');
 var PluginError = require('gulp-util/lib/PluginError');
 var applySourceMap = require('vinyl-sourcemaps-apply');
+var saveLicense = require('uglify-save-license');
 var reSourceMapComment = /\n\/\/# sourceMappingURL=.+?$/;
 var pluginName = 'gulp-uglify';
 
@@ -25,6 +26,8 @@ function setup(opts) {
   } else if (options.preserveComments === 'some') {
     // preserve comments with directives or that start with a bang (!)
     options.output.comments = /^!|@preserve|@license|@cc_on/i;
+  } else if (options.preserveComments === 'license') {
+    options.output.comments = saveLicense
   } else if (typeof options.preserveComments === 'function') {
     options.output.comments = options.preserveComments;
   }
