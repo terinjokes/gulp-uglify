@@ -1,5 +1,10 @@
 # gulp-uglify changelog
 
+## 1.3.0
+
+- Updated UglifyJS to 2.4.24.
+- Streams3 support via through2 dependency update.
+
 ## 1.2.0
 
 - Update dependencies, including UglifyJS to 2.4.19.
