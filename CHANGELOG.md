@@ -1,5 +1,10 @@
 # gulp-uglify changelog
 
+## 1.4.0
+
+- Deprecated the `preserveComments` option of "some".
+- Added the `preserveComments` option of "license" that uses [`uglify-save-license`](https://github.com/shinnn/uglify-save-license).
+
 ## 1.3.0
 
 - Updated UglifyJS to 2.4.24.
