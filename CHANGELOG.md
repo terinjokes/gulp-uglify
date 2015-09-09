@@ -1,5 +1,11 @@
 # gulp-uglify changelog
 
+## 1.4.1
+
+- Detect if options is a non-Object and log a warning.
+
+  Older versions of Node.js did not allow Strings to be passed to `Object.keys` leading to errors and confusion to users following certain tutorials.
+
 ## 1.4.0
 
 - Deprecated the `preserveComments` option of "some".
