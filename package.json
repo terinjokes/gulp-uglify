@@ -16,8 +16,10 @@
   },
   "devDependencies": {
     "argg": "0.0.1",
+    "babel-core": "^5.8.24",
     "cmem": ">=1.0.0 <2.0.0-0",
     "codeclimate-test-reporter": "0.0.4",
+    "gulp-babel": "^5.2.1",
     "gulp-concat": ">=2.3.4 <3.0.0-0",
     "gulp-sourcemaps": ">=1.1.1 <2.0.0-0",
     "istanbul": ">=0.3.0 <0.4.0-0",

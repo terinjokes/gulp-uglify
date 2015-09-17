@@ -4,6 +4,8 @@ var test = require('tape'),
 		gulpUglify = require('../'),
 		uglifyjs = require('uglify-js'),
 		concat = require('gulp-concat'),
+		gulpBabel = require('gulp-babel'),
+		babel = require('babel-core'),
 		sourcemaps = require('gulp-sourcemaps');
 
 var testContents1Input = '(function(first, second) {\n    console.log(first + second);\n}(5, 10));\n';
@@ -11,6 +13,8 @@ var testContents1Expected = uglifyjs.minify(testContents1Input, {fromString: tru
 var testContents2Input = '(function(alert) {\n    alert(5);\n}(alert));\n';
 var testContents2Expected = uglifyjs.minify(testContents2Input, {fromString: true}).code;
 var testConcatExpected = uglifyjs.minify(testContents1Expected + testContents2Input, {fromString: true}).code;
+var testBabelInput = babel.transform(testContents1Input).code;
+var testBabelExpected = uglifyjs.minify(testBabelInput, {fromString: true}).code;
 
 test('should minify files', function(t) {
 	t.plan(11);
@@ -157,4 +161,43 @@ test('should not remember source maps across files', function(t) {
 	mangled.write(testFile1);
 	mangled.write(testFile2);
 	mangled.end();
+});
+
+test('should babel correctly', function(t) {
+	t.plan(14);
+
+	var testFile1 = new Vinyl({
+		cwd: "/home/terin/broken-promises/",
+		base: "/home/terin/broken-promises/test",
+		path: "/home/terin/broken-promises/test/test1.js",
+		contents: new Buffer(testContents1Input)
+	});
+
+	var sm = sourcemaps.init();
+	var bbl = sm.pipe(gulpBabel());
+	var ct = bbl.pipe(concat('all.js'));
+	var mangled = ct.pipe(gulpUglify());
+
+	mangled.on('data', function(newFile) {
+		t.ok(newFile, 'emits a file');
+		t.ok(newFile.path, 'file has a path');
+		t.ok(newFile.relative, 'file has relative path information');
+		t.ok(newFile.contents, 'file has contents');
+
+		t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+
+		t.equals(String(newFile.contents), testBabelExpected);
+
+		t.ok(newFile.sourceMap, 'has a source map');
+		t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
+		t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
+		t.deepEquals(newFile.sourceMap.sources, ['all.js', 'test1.js'], 'sources array has the inputs');
+		t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
+		t.ok(newFile.sourceMap.mappings, 'source map has mappings');
+		t.ok(Array.isArray(newFile.sourceMap.sourcesContent), 'source maps has sources content array');
+		t.deepEquals(newFile.sourceMap.sourcesContent, [testBabelInput, testContents1Input], 'sources array has the inputs');
+	});
+
+	sm.write(testFile1);
+	sm.end();
 });
