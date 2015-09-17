@@ -10,7 +10,7 @@ var testContents1Input = '(function(first, second) {\n    console.log(first + se
 var testContents1Expected = uglifyjs.minify(testContents1Input, {fromString: true}).code;
 var testContents2Input = '(function(alert) {\n    alert(5);\n}(alert));\n';
 var testContents2Expected = uglifyjs.minify(testContents2Input, {fromString: true}).code;
-var testConcatExpected = uglifyjs.minify(testContents1Expected + testContents2Input, {fromString: true}).code;
+var testConcatExpected = uglifyjs.minify(testContents1Input + '\n' + testContents2Input, {fromString: true}).code;
 
 test('should minify files', function(t) {
 	t.plan(11);
