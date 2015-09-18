@@ -4,8 +4,6 @@ var test = require('tape'),
 		gulpUglify = require('../'),
 		uglifyjs = require('uglify-js'),
 		concat = require('gulp-concat'),
-		gulpBabel = require('gulp-babel'),
-		babel = require('babel-core'),
 		sourcemaps = require('gulp-sourcemaps');
 
 var testContents1Input = '(function(first, second) {\n    console.log(first + second);\n}(5, 10));\n';
@@ -13,8 +11,6 @@ var testContents1Expected = uglifyjs.minify(testContents1Input, {fromString: tru
 var testContents2Input = '(function(alert) {\n    alert(5);\n}(alert));\n';
 var testContents2Expected = uglifyjs.minify(testContents2Input, {fromString: true}).code;
 var testConcatExpected = uglifyjs.minify(testContents1Expected + testContents2Input, {fromString: true}).code;
-var testBabelInput = babel.transform(testContents1Input).code;
-var testBabelExpected = uglifyjs.minify(testBabelInput, {fromString: true}).code;
 
 test('should minify files', function(t) {
 	t.plan(11);
@@ -166,17 +162,25 @@ test('should not remember source maps across files', function(t) {
 test('should babel correctly', function(t) {
 	t.plan(14);
 
+	var testBabelInput = '"use strict";\n\n(function (first, second) {\n    console.log(first + second);\n})(5, 10);';
+	var testBabelExpected = uglifyjs.minify(testBabelInput, {fromString: true}).code;
+
 	var testFile1 = new Vinyl({
 		cwd: "/home/terin/broken-promises/",
 		base: "/home/terin/broken-promises/test",
-		path: "/home/terin/broken-promises/test/test1.js",
-		contents: new Buffer(testContents1Input)
+		path: "/home/terin/broken-promises/test/all.js",
+		contents: new Buffer(testBabelInput)
 	});
+	testFile1.sourceMap = {
+		version: 3,
+		file: 'all.js',
+		sources: [ 'test1.js' ],
+		names: [],
+		mappings: ';;AAAA,AAAC,CAAA,UAAS,KAAK,EAAE,MAAM,EAAE;AACrB,WAAO,CAAC,GAAG,CAAC,KAAK,GAAG,MAAM,CAAC,CAAC;CAC/B,CAAA,CAAC,CAAC,EAAE,EAAE,CAAC,CAAE',
+		sourcesContent: [ testContents1Input ]
+	};
 
-	var sm = sourcemaps.init();
-	var bbl = sm.pipe(gulpBabel());
-	var ct = bbl.pipe(concat('all.js'));
-	var mangled = ct.pipe(gulpUglify());
+	var mangled = gulpUglify();
 
 	mangled.on('data', function(newFile) {
 		t.ok(newFile, 'emits a file');
@@ -198,6 +202,6 @@ test('should babel correctly', function(t) {
 		t.deepEquals(newFile.sourceMap.sourcesContent, [testBabelInput, testContents1Input], 'sources array has the inputs');
 	});
 
-	sm.write(testFile1);
-	sm.end();
+	mangled.write(testFile1);
+	mangled.end();
 });
