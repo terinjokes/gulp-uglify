@@ -5,28 +5,25 @@
   "author": "Terin Stock <terinjokes@gmail.com>",
   "bugs": "https://github.com/terinjokes/gulp-uglify/issues",
   "dependencies": {
-    "deap": ">=1.0.0 <2.0.0-0",
-    "fancy-log": ">=1.0.0 <2.0.0-0",
-    "gulp-util": ">=3.0.0 <4.0.0-0",
-    "isobject": ">=2.0.0 <3.0.0-0",
-    "through2": ">=2.0.0 <3.0.0-0",
-    "uglify-js": "2.4.24",
-    "uglify-save-license": ">=0.4.1 <0.5.0-0",
-    "vinyl-sourcemaps-apply": ">=0.1.1 <0.2.0-0"
+    "deap": "^1.0.0",
+    "fancy-log": "^1.0.0",
+    "gulp-util": "^3.0.0",
+    "isobject": "^2.0.0",
+    "through2": "^2.0.0",
+    "uglify-js": "2.5.0",
+    "uglify-save-license": "^0.4.1",
+    "vinyl-sourcemaps-apply": "^0.2.0"
   },
   "devDependencies": {
     "argg": "0.0.1",
-    "cmem": ">=1.0.0 <2.0.0-0",
-    "codeclimate-test-reporter": "0.0.4",
-    "gulp-concat": ">=2.3.4 <3.0.0-0",
-    "gulp-sourcemaps": ">=1.1.1 <2.0.0-0",
-    "istanbul": ">=0.3.0 <0.4.0-0",
-    "rimraf": ">=2.2.8 <3.0.0-0",
+    "cmem": "^1.0.0",
+    "codeclimate-test-reporter": "^0.1.1",
+    "gulp-concat": "^2.0.0",
+    "gulp-sourcemaps": "^1.0.0",
+    "istanbul": "^0.3.0",
+    "rimraf": "^2.2.8",
     "tape": "^4.0.0",
-    "vinyl": ">=0.4.6 <1.0.0-0"
-  },
-  "engines": {
-    "node": ">= 0.9"
+    "vinyl": "^1.0.0"
   },
   "homepage": "https://github.com/terinjokes/gulp-uglify/",
   "keywords": [
