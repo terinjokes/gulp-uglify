@@ -1,5 +1,10 @@
 # gulp-uglify changelog
 
+## 1.4.2
+
+- Updated UglifyJS to 2.5.0.
+- CI and dependencies chores.
+
 ## 1.4.1
 
 - Detect if options is a non-Object and log a warning.
