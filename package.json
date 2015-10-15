@@ -15,12 +15,11 @@
     "vinyl-sourcemaps-apply": "^0.2.0"
   },
   "devDependencies": {
-    "argg": "0.0.1",
     "cmem": "^1.0.0",
     "coveralls": "^2.11.4",
     "gulp-concat": "^2.0.0",
     "gulp-sourcemaps": "^1.0.0",
-    "istanbul": "^0.3.0",
+    "istanbul": "^0.3.22",
     "tape": "^4.0.0",
     "vinyl": "^1.0.0"
   },
@@ -32,7 +31,7 @@
   "main": "index.js",
   "repository": "https://github.com/terinjokes/gulp-uglify.git",
   "scripts": {
-    "test": "istanbul cover node_modules/argg test/*.js",
-    "coverage": "npm test && cat ./coverage/lcov.info | coveralls"
+    "test": "istanbul cover tape test/*.js",
+    "coverage": "cat ./coverage/lcov.info | coveralls"
   }
 }
