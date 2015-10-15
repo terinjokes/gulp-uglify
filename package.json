@@ -20,7 +20,7 @@
     "coveralls": "^2.11.4",
     "gulp-concat": "^2.0.0",
     "gulp-sourcemaps": "^1.0.0",
-    "istanbul": "^0.3.0",
+    "istanbul": "^0.3.22",
     "tape": "^4.0.0",
     "vinyl": "^1.0.0"
   },
