@@ -31,7 +31,7 @@
   "main": "index.js",
   "repository": "https://github.com/terinjokes/gulp-uglify.git",
   "scripts": {
-    "test": "istanbul cover tape test/*.js",
+    "test": "istanbul cover ./node_modules/tape/bin/tape test/*.js",
     "coverage": "cat ./coverage/lcov.info | coveralls"
   }
 }

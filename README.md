@@ -1,4 +1,4 @@
-# gulp-uglify [![Build Status](https://img.shields.io/travis/terinjokes/gulp-uglify/master.svg)](https://travis-ci.org/terinjokes/gulp-uglify) [![](https://img.shields.io/npm/dm/gulp-uglify.svg)](https://www.npmjs.org/package/gulp-uglify) [![](https://img.shields.io/npm/v/gulp-uglify.svg)](https://www.npmjs.org/package/gulp-uglify) [![](https://img.shields.io/coveralls/terinjokes/gulp-uglify/master.svg)](https://coveralls.io/github/terinjokes/gulp-uglify)
+# gulp-uglify [![Travis-CI Status](https://img.shields.io/travis/terinjokes/gulp-uglify/master.svg?label=Travis CI)](https://travis-ci.org/terinjokes/gulp-uglify) [![AppVeyor Status](https://img.shields.io/appveyor/ci/terinjokes/gulp-uglify/master.svg?label=AppVeyor)](https://ci.appveyor.com/project/terinjokes/gulp-uglify) [![](https://img.shields.io/npm/dm/gulp-uglify.svg)](https://www.npmjs.org/package/gulp-uglify) [![](https://img.shields.io/npm/v/gulp-uglify.svg)](https://www.npmjs.org/package/gulp-uglify) [![](https://img.shields.io/coveralls/terinjokes/gulp-uglify/master.svg)](https://coveralls.io/github/terinjokes/gulp-uglify)
 
 > Minify JavaScript with UglifyJS2.
 
