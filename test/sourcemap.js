@@ -158,3 +158,50 @@ test('should not remember source maps across files', function(t) {
 	mangled.write(testFile2);
 	mangled.end();
 });
+
+test('should babel correctly', function(t) {
+	t.plan(14);
+
+	var testBabelInput = '"use strict";\n\n(function (first, second) {\n    console.log(first + second);\n})(5, 10);';
+	var testBabelExpected = uglifyjs.minify(testBabelInput, {fromString: true}).code;
+
+	var testFile1 = new Vinyl({
+		cwd: "/home/terin/broken-promises/",
+		base: "/home/terin/broken-promises/test",
+		path: "/home/terin/broken-promises/test/all.js",
+		contents: new Buffer(testBabelInput)
+	});
+	testFile1.sourceMap = {
+		version: 3,
+		file: 'all.js',
+		sources: [ 'test1.js' ],
+		names: [],
+		mappings: ';;AAAA,AAAC,CAAA,UAAS,KAAK,EAAE,MAAM,EAAE;AACrB,WAAO,CAAC,GAAG,CAAC,KAAK,GAAG,MAAM,CAAC,CAAC;CAC/B,CAAA,CAAC,CAAC,EAAE,EAAE,CAAC,CAAE',
+		sourcesContent: [ testContents1Input ]
+	};
+
+	var mangled = gulpUglify();
+
+	mangled.on('data', function(newFile) {
+		t.ok(newFile, 'emits a file');
+		t.ok(newFile.path, 'file has a path');
+		t.ok(newFile.relative, 'file has relative path information');
+		t.ok(newFile.contents, 'file has contents');
+
+		t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+
+		t.equals(String(newFile.contents), testBabelExpected);
+
+		t.ok(newFile.sourceMap, 'has a source map');
+		t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
+		t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
+		t.deepEquals(newFile.sourceMap.sources, ['all.js', 'test1.js'], 'sources array has the inputs');
+		t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
+		t.ok(newFile.sourceMap.mappings, 'source map has mappings');
+		t.ok(Array.isArray(newFile.sourceMap.sourcesContent), 'source maps has sources content array');
+		t.deepEquals(newFile.sourceMap.sourcesContent, [testBabelInput, testContents1Input], 'sources array has the inputs');
+	});
+
+	mangled.write(testFile1);
+	mangled.end();
+});
