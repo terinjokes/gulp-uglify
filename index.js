@@ -2,6 +2,6 @@
 var uglify = require('uglify-js');
 var minifier = require('./minifier');
 
-module.exports = function(opts) {
+module.exports = function (opts) {
   return minifier(opts, uglify);
 };

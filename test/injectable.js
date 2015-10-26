@@ -13,19 +13,19 @@ var testFile = new Vinyl({
   contents: new Buffer(testContentsInput)
 });
 var uglifyjs = {
-  minify: cmem(function() {
+  minify: cmem(function () {
     return {
       code: testContentsOutput
     };
   })
 };
 
-test('should minify files', function(t) {
+test('should minify files', function (t) {
   t.plan(10);
 
   var stream = minifer({injecting: true}, uglifyjs);
 
-  stream.on('data', function(newFile) {
+  stream.on('data', function (newFile) {
     t.ok(newFile, 'emits a file');
     t.ok(newFile.path, 'file has a path');
     t.ok(newFile.relative, 'file has relative path information');

@@ -50,7 +50,7 @@ function createError(file, err) {
     });
   }
 
-  var msg = err.message || err.msg || /* istanbul ignore next */ 'unspecified error';
+  var msg = err.message || err.msg || 'unspecified error';
 
   return new PluginError(pluginName, file.path + ': ' + msg, {
     fileName: file.path,
@@ -60,7 +60,7 @@ function createError(file, err) {
   });
 }
 
-module.exports = function(opts, uglify) {
+module.exports = function (opts, uglify) {
   function minify(file, encoding, callback) {
     var options = setup(opts || {});
 
@@ -76,7 +76,7 @@ module.exports = function(opts, uglify) {
       options.outSourceMap = file.relative;
     }
 
-    var mangled = trycatch(function() {
+    var mangled = trycatch(function () {
       var m = uglify.minify(String(file.contents), options);
       m.code = new Buffer(m.code.replace(reSourceMapComment, ''));
       return m;

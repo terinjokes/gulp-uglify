@@ -21,7 +21,8 @@
     "gulp-sourcemaps": "^1.0.0",
     "istanbul": "^0.4.0",
     "tape": "^4.0.0",
-    "vinyl": "^1.0.0"
+    "vinyl": "^1.0.0",
+    "xo": "^0.10.0"
   },
   "homepage": "https://github.com/terinjokes/gulp-uglify/",
   "keywords": [
@@ -30,8 +31,11 @@
   "license": "MIT",
   "main": "index.js",
   "repository": "https://github.com/terinjokes/gulp-uglify.git",
+  "xo": {
+    "space": true
+  },
   "scripts": {
-    "test": "istanbul cover ./node_modules/tape/bin/tape test/*.js",
+    "test": "xo && istanbul cover ./node_modules/tape/bin/tape test/*.js",
     "coverage": "cat ./coverage/lcov.info | coveralls"
   }
 }
