@@ -6,8 +6,9 @@ var log = require('fancy-log');
 var applySourceMap = require('vinyl-sourcemaps-apply');
 var saveLicense = require('uglify-save-license');
 var isObject = require('isobject');
+var createError = require('./lib/createError');
+
 var reSourceMapComment = /\n\/\/# sourceMappingURL=.+?$/;
-var pluginName = 'gulp-uglify';
 
 function trycatch(fn, handle) {
   try {
@@ -40,24 +41,6 @@ function setup(opts) {
   }
 
   return options;
-}
-
-function createError(file, err) {
-  if (typeof err === 'string') {
-    return new PluginError(pluginName, file.path + ': ' + err, {
-      fileName: file.path,
-      showStack: false
-    });
-  }
-
-  var msg = err.message || err.msg || 'unspecified error';
-
-  return new PluginError(pluginName, file.path + ': ' + msg, {
-    fileName: file.path,
-    lineNumber: err.line,
-    stack: err.stack,
-    showStack: false
-  });
 }
 
 module.exports = function (opts, uglify) {
