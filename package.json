@@ -34,6 +34,11 @@
   "xo": {
     "space": true
   },
+  "files": [
+    "index.js",
+    "minifier.js",
+    "lib/"
+  ],
   "scripts": {
     "test": "xo && istanbul cover ./node_modules/tape/bin/tape test/*.js",
     "coverage": "cat ./coverage/lcov.info | coveralls"
