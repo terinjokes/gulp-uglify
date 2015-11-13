@@ -59,6 +59,8 @@ module.exports = function (opts, uglify) {
       options.outSourceMap = file.relative;
     }
 
+    var originalContents = String(file.contents);
+
     var mangled = trycatch(function () {
       var m = uglify.minify(String(file.contents), options);
       m.code = new Buffer(m.code.replace(reSourceMapComment, ''));
@@ -74,6 +76,7 @@ module.exports = function (opts, uglify) {
     if (file.sourceMap) {
       var sourceMap = JSON.parse(mangled.map);
       sourceMap.sources = [file.relative];
+      sourceMap.sourcesContent = [originalContents];
       applySourceMap(file, sourceMap);
     }
 
