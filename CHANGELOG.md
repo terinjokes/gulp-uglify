@@ -1,5 +1,11 @@
 # gulp-uglify changelog
 
+## 1.5.0
+
+- Update UglifyJS to 2.6.0.
+- CI and dependencies chores.
+- Attempt to resolve issue #109 where "ghost" files would appear in generated sourcemaps.
+
 ## 1.4.2
 
 - Updated UglifyJS to 2.5.0.
