@@ -45,16 +45,16 @@ function setup(opts) {
 
 module.exports = function (opts, uglify) {
   function minify(file, encoding, callback) {
-    var overriddenError = function overriddenError(){
+    var overriddenError = function overriddenError() {
       // the warn_function passes a format string as first argument
       // - we override that and add the filename to the arguments
       var args = Array.prototype.slice.call(arguments);
       var filePath = (file.base && file.path) ? file.relative : file.path;
-      if(args[0] === 'WARN: %s') {
+      if (args[0] === 'WARN: %s') {
         args[0] = 'gulp-uglify: %s: %s';
         args.splice(1, 0, filePath);
       } else {
-        args.unshift( 'gulp-uglify:', filePath );
+        args.unshift('gulp-uglify:', filePath);
       }
       log.apply(null, args);
     };
