@@ -1,5 +1,9 @@
 # gulp-uglify changelog
 
+## 1.5.3
+
+- Updated UglifyJS to 2.6.2
+
 ## 1.5.2
 
 - Updated UglfiyJS to 2.6.1
