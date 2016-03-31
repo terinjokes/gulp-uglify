@@ -87,3 +87,25 @@ Wherever possible, the PluginError object will contain the following properties:
 
 To handle errors across your entire pipeline, see the
 [gulp](https://github.com/gulpjs/gulp/blob/master/docs/recipes/combining-streams-to-handle-errors.md#combining-streams-to-handle-errors) documentation.
+
+## Using a Different UglifyJS
+
+By default, `gulp-uglify` uses the version of UglifyJS installed as a dependency.
+It's possible to configure the use of a different version using the "minifier" entry point.
+
+```javascript
+var uglifyjs = require('uglify-js'); // can be a git checkout
+                                     // or another module (such as `uglify-js-harmony`)
+var minifer = require('gulp-uglify/miniifer');
+
+gulp.task('compress', function() {
+  // the same options as described above
+  var options = {
+    preserveComments: 'license'
+  };
+
+  return gulp.src('lib/*.js')
+    .pipe(minifer(options, uglifyjs))
+    .pipe(gulp.dest('dist'));
+});
+```
