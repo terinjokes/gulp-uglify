@@ -87,3 +87,19 @@ Wherever possible, the PluginError object will contain the following properties:
 
 To handle errors across your entire pipeline, see the
 [gulp](https://github.com/gulpjs/gulp/blob/master/docs/recipes/combining-streams-to-handle-errors.md#combining-streams-to-handle-errors) documentation.
+
+## Using a different branch of UglifyJS
+
+It's possible to use a different branch of uglifyjs by passing it as an argument
+to `require` statement that is used to import the module.
+
+Example:
+
+```javascript
+var uglifyjs = require('uglify-js-harmony');
+var uglify = require('gulp-uglify/minifier')({}, uglifyjs);
+
+gulp.task('minify', function() {
+  gulp.src('js/*').pipe(uglify).pipe(gulp.dest('out/');
+})
+```
