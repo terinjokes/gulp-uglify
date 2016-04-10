@@ -1,9 +1,9 @@
 'use strict';
+var Readable = require('stream').Readable;
 var test = require('tape');
 var Vinyl = require('vinyl');
-var gulpUglify = require('../');
-var Readable = require('stream').Readable;
 var PluginError = require('gulp-util/lib/PluginError');
+var gulpUglify = require('../');
 
 var testFile1 = new Vinyl({
   cwd: '/home/terin/broken-promises/',

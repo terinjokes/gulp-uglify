@@ -1,10 +1,10 @@
 'use strict';
 var test = require('tape');
 var Vinyl = require('vinyl');
-var gulpUglify = require('../');
 var uglifyjs = require('uglify-js');
 var concat = require('gulp-concat');
 var sourcemaps = require('gulp-sourcemaps');
+var gulpUglify = require('../');
 
 var testContents1Input = '(function(first, second) {\n    console.log(first + second);\n}(5, 10));\n';
 var testContents1Expected = uglifyjs.minify(testContents1Input, {fromString: true}).code;

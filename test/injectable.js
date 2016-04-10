@@ -1,8 +1,8 @@
 'use strict';
 var test = require('tape');
 var Vinyl = require('vinyl');
-var minifer = require('../minifier');
 var cmem = require('cmem');
+var minifer = require('../minifier');
 
 var testContentsOutput = 'function abs(a, b) {\n  return a > b; }';
 var testContentsInput = 'function testInput() {}';
