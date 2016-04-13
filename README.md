@@ -1,4 +1,4 @@
-# gulp-uglify [![Travis-CI Status](https://img.shields.io/travis/terinjokes/gulp-uglify/master.svg?label=Travis CI)](https://travis-ci.org/terinjokes/gulp-uglify) [![AppVeyor Status](https://img.shields.io/appveyor/ci/terinjokes/gulp-uglify/master.svg?label=AppVeyor)](https://ci.appveyor.com/project/terinjokes/gulp-uglify) [![](https://img.shields.io/npm/dm/gulp-uglify.svg)](https://www.npmjs.org/package/gulp-uglify) [![](https://img.shields.io/npm/v/gulp-uglify.svg)](https://www.npmjs.org/package/gulp-uglify) [![](https://img.shields.io/coveralls/terinjokes/gulp-uglify/master.svg)](https://coveralls.io/github/terinjokes/gulp-uglify)
+# gulp-uglify [![][travis-shield-img]][travis-shield][![][appveyor-shield-img]][appveyor-shield][![][npm-dl-shield-img]][npm-shield][![][npm-v-shield-img]][npm-shield][![][coveralls-shield-img]][coveralls-shield]
 
 > Minify JavaScript with UglifyJS2.
 
@@ -121,3 +121,13 @@ gulp.task('compress', function (cb) {
   );
 });
 ```
+
+[travis-shield-img]: https://img.shields.io/travis/terinjokes/gulp-uglify/master.svg?label=Travis%20CI&style=flat-square
+[travis-shield]: https://travis-ci.org/terinjokes/gulp-uglify
+[appveyor-shield-img]: https://img.shields.io/appveyor/ci/terinjokes/gulp-uglify/master.svg?label=AppVeyor&style=flat-square
+[appveyor-shield]: https://ci.appveyor.com/project/terinjokes/gulp-uglify
+[npm-dl-shield-img]: https://img.shields.io/npm/dm/gulp-uglify.svg?style=flat-square
+[npm-shield]: http://browsenpm.org/package/gulp-uglify
+[npm-v-shield-img]: https://img.shields.io/npm/v/gulp-uglify.svg?style=flat-square
+[coveralls-shield-img]: https://img.shields.io/coveralls/terinjokes/gulp-uglify/master.svg?style=flat-square
+[coveralls-shield]: https://coveralls.io/github/terinjokes/gulp-uglify
