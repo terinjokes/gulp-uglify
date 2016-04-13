@@ -11,14 +11,24 @@ Install package with NPM and add it to your development dependencies:
 ## Usage
 
 ```javascript
+var gulp = require('gulp');
 var uglify = require('gulp-uglify');
+var pump = require('pump');
 
-gulp.task('compress', function() {
-  return gulp.src('lib/*.js')
-    .pipe(uglify())
-    .pipe(gulp.dest('dist'));
+gulp.task('compress', function (cb) {
+  pump([
+        gulp.src('lib/*.js'),
+        uglify(),
+        gulp.dest('dist')
+    ],
+    cb
+  );
 });
 ```
+
+To help properly handle error conditions with Node streams, this project
+recommends the use of [`pump`](https://github.com/mafintosh/pump). For more
+information, see [Why Use Pump?](docs/why-use-pump/README.md#why-use-pump).
 
 ## Options
 
@@ -85,9 +95,6 @@ Wherever possible, the PluginError object will contain the following properties:
 - `lineNumber`
 - `message`
 
-To handle errors across your entire pipeline, see the
-[gulp](https://github.com/gulpjs/gulp/blob/master/docs/recipes/combining-streams-to-handle-errors.md#combining-streams-to-handle-errors) documentation.
-
 ## Using a Different UglifyJS
 
 By default, `gulp-uglify` uses the version of UglifyJS installed as a dependency.
@@ -97,15 +104,20 @@ It's possible to configure the use of a different version using the "minifier" e
 var uglifyjs = require('uglify-js'); // can be a git checkout
                                      // or another module (such as `uglify-js-harmony`)
 var minifer = require('gulp-uglify/minifier');
+var pump = require('pump');
 
-gulp.task('compress', function() {
+gulp.task('compress', function (cb) {
   // the same options as described above
   var options = {
     preserveComments: 'license'
   };
 
-  return gulp.src('lib/*.js')
-    .pipe(minifer(options, uglifyjs))
-    .pipe(gulp.dest('dist'));
+  pump([
+      gulp.src('lib/*.js'),
+      minifier(options, uglifyjs),
+      gulp.dest('dist')
+    ],
+    cb
+  );
 });
 ```
