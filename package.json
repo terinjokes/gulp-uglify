@@ -8,7 +8,7 @@
     "deap": "^1.0.0",
     "fancy-log": "^1.0.0",
     "gulp-util": "^3.0.0",
-    "isobject": "^2.0.0",
+    "isobject": "^2.1.0",
     "through2": "^2.0.0",
     "uglify-js": "2.6.2",
     "uglify-save-license": "^0.4.1",
