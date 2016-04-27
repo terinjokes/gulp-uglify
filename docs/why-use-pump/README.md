@@ -72,11 +72,11 @@ gulp.task('compress', function () {
   }
 
   return gulp.src('lib/*.js')
-    .on(createErrorHandler('gulp.src'))
+    .on('error', createErrorHandler('gulp.src'))
     .pipe(uglify())
-    .on(createErrorHandler('uglify'))
+    .on('error', createErrorHandler('uglify'))
     .pipe(gulp.dest('dist'))
-    .on(createErrorHandler('gulp.dest'));
+    .on('error', createErrorHandler('gulp.dest'));
 });
 ```
 
