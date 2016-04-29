@@ -1,7 +1,7 @@
 'use strict';
 var test = require('tape');
 var Vinyl = require('vinyl');
-var createError = require('../lib/createError');
+var createError = require('../lib/create-error');
 
 var testOkContentsInput = '"use strict"; (function(console, first, second) { console.log(first + second) }(5, 10))';
 var testFile = new Vinyl({

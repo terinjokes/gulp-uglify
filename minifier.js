@@ -6,7 +6,7 @@ var log = require('fancy-log');
 var applySourceMap = require('vinyl-sourcemaps-apply');
 var saveLicense = require('uglify-save-license');
 var isObject = require('isobject');
-var createError = require('./lib/createError');
+var createError = require('./lib/create-error');
 
 var reSourceMapComment = /\n\/\/# sourceMappingURL=.+?$/;
 
