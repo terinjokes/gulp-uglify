@@ -100,10 +100,14 @@ Wherever possible, the PluginError object will contain the following properties:
 By default, `gulp-uglify` uses the version of UglifyJS installed as a dependency.
 It's possible to configure the use of a different version using the "minifier" entry point.
 
+If you need to minify a file with raw ES6(ES2015) you can install and use `uglify-js-harmony`.
+
+`npm install --save-dev uglify-js-harmony`
+
 ```javascript
 var uglifyjs = require('uglify-js'); // can be a git checkout
-                                     // or another module (such as `uglify-js-harmony`)
-var minifer = require('gulp-uglify/minifier');
+                                     // or another module (such as `uglify-js-harmony`.)
+var minifier = require('gulp-uglify/minifier');
 var pump = require('pump');
 
 gulp.task('compress', function (cb) {
