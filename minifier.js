@@ -13,8 +13,8 @@ var reSourceMapComment = /\n\/\/# sourceMappingURL=.+?$/;
 function trycatch(fn, handle) {
   try {
     return fn();
-  } catch (e) {
-    return handle(e);
+  } catch (err) {
+    return handle(err);
   }
 }
 
