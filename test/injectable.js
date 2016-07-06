@@ -37,7 +37,9 @@ test('should minify files', function (t) {
     t.equals(String(newFile.contents), testContentsOutput);
 
     t.equals(uglifyjs.minify.$count, 1, 'minify stub was called only once');
-    t.equals(uglifyjs.minify.$args[0], testContentsInput, 'stub argument 0 was the expected input');
+    t.deepEqual(uglifyjs.minify.$args[0], {
+      'test1.js': testContentsInput
+    }, 'stub argument 0 was the expected input');
     t.deepEqual(uglifyjs.minify.$args[1], {
       fromString: true,
       output: {},
