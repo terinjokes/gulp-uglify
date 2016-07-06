@@ -195,11 +195,11 @@ test('should avoid "ghost" files in sourcemaps', function (t) {
     t.ok(newFile.sourceMap, 'has a source map');
     t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
     t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
-    t.deepEquals(newFile.sourceMap.sources, ['all.js', 'test1.js'], 'sources array has the inputs');
+    t.deepEquals(newFile.sourceMap.sources, ['test1.js'], 'sources array has the inputs');
     t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
     t.ok(newFile.sourceMap.mappings, 'source map has mappings');
     t.ok(Array.isArray(newFile.sourceMap.sourcesContent), 'source maps has sources content array');
-    t.deepEquals(newFile.sourceMap.sourcesContent, [testBabelInput, testContents1Input], 'sources array has the inputs');
+    t.deepEquals(newFile.sourceMap.sourcesContent, [testContents1Input], 'sources array has the inputs');
   });
 
   mangled.write(testFile1);

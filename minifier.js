@@ -1,14 +1,23 @@
 'use strict';
 var through = require('through2');
-var deap = require('deap');
 var PluginError = require('gulp-util/lib/PluginError');
 var log = require('fancy-log');
 var applySourceMap = require('vinyl-sourcemaps-apply');
 var saveLicense = require('uglify-save-license');
-var isObject = require('isobject');
+var isObject = require('lodash/fp/isObject');
+var zipObject = require('lodash/fp/zipObject');
+var map = require('lodash/fp/map');
+var prop = require('lodash/fp/prop');
+var _ = require('lodash/fp/placeholder');
+var defaultsDeep = require('lodash/fp/defaultsDeep');
 var createError = require('./lib/create-error');
 
 var reSourceMapComment = /\n\/\/# sourceMappingURL=.+?$/;
+
+var defaultOptions = defaultsDeep({
+  fromString: true,
+  output: {}
+});
 
 function trycatch(fn, handle) {
   try {
@@ -24,10 +33,7 @@ function setup(opts) {
     opts = {};
   }
 
-  var options = deap({}, opts, {
-    fromString: true,
-    output: {}
-  });
+  var options = defaultOptions(opts);
 
   if (options.preserveComments === 'all') {
     options.output.comments = true;
@@ -46,6 +52,7 @@ function setup(opts) {
 module.exports = function (opts, uglify) {
   function minify(file, encoding, callback) {
     var options = setup(opts || {});
+    var sources;
 
     if (file.isNull()) {
       return callback(null, file);
@@ -56,13 +63,20 @@ module.exports = function (opts, uglify) {
     }
 
     if (file.sourceMap) {
+      // UglifyJS generates broken source maps if the input source map
+      // does not contain mappings.
+      if (file.sourceMap.mappings) {
+        options.inSourceMap = file.sourceMap;
+      }
       options.outSourceMap = file.relative;
+
+      sources = zipObject(file.sourceMap.sources, file.sourceMap.sourcesContent);
     }
 
-    var originalContents = String(file.contents);
-
     var mangled = trycatch(function () {
-      var m = uglify.minify(String(file.contents), options);
+      var map = {};
+      map[file.relative] = String(file.contents);
+      var m = uglify.minify(map, options);
       m.code = new Buffer(m.code.replace(reSourceMapComment, ''));
       return m;
     }, createError.bind(null, file));
@@ -75,8 +89,8 @@ module.exports = function (opts, uglify) {
 
     if (file.sourceMap) {
       var sourceMap = JSON.parse(mangled.map);
-      sourceMap.sources = [file.relative];
-      sourceMap.sourcesContent = [originalContents];
+
+      sourceMap.sourcesContent = map(prop(_, sources), sourceMap.sources);
       applySourceMap(file, sourceMap);
     }
 
