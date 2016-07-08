@@ -1,6 +1,7 @@
 'use strict';
 var test = require('tape');
 var Vinyl = require('vinyl');
+var GulpUglifyError = require('../lib/gulp-uglify-error');
 var gulpUglify = require('../');
 
 var testContentsInput = 'function errorFunction(error)\n{';
@@ -21,7 +22,7 @@ var testFile2 = new Vinyl({
 });
 
 test('should report files in error', function (t) {
-  t.plan(6);
+  t.plan(7);
 
   var stream = gulpUglify();
 
@@ -30,10 +31,11 @@ test('should report files in error', function (t) {
   });
 
   stream.on('error', function (e) {
-    t.ok(e instanceof Error, 'argument should be of type error');
+    t.ok(e instanceof Error, 'argument should be of type Error');
+    t.ok(e instanceof GulpUglifyError, 'argument should be of type GulpUglifyError');
     t.equal(e.plugin, 'gulp-uglify', 'error is from gulp-uglify');
     t.equal(e.fileName, testFile1.path, 'error reports correct file name');
-    t.equal(e.lineNumber, 2, 'error reports correct line number');
+    t.equal(e.cause.line, 2, 'error reports correct line number');
     t.ok(e.stack, 'error has a stack');
     t.false(e.showStack, 'error is configured to not print the stack');
   });
@@ -43,7 +45,7 @@ test('should report files in error', function (t) {
 });
 
 test('shouldn\'t blow up when given output options', function (t) {
-  t.plan(5);
+  t.plan(6);
 
   var stream = gulpUglify({
     output: {
@@ -56,8 +58,9 @@ test('shouldn\'t blow up when given output options', function (t) {
   });
 
   stream.on('error', function (e) {
-    t.ok(e instanceof Error, 'argument should be of type error');
-    t.equals(e.message, testFile2.path + ': `exportAll` is not a supported option');
+    t.ok(e instanceof Error, 'argument should be of type Error');
+    t.ok(e instanceof GulpUglifyError, 'argument should be of type GulpUglifyError');
+    t.equals(e.cause.msg, '`exportAll` is not a supported option');
     t.equal(e.plugin, 'gulp-uglify', 'error is from gulp-uglify');
     t.equal(e.fileName, testFile2.path, 'error reports correct file name');
     t.false(e.showStack, 'error is configured to not print the stack');
