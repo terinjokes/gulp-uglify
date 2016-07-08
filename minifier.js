@@ -1,7 +1,6 @@
 'use strict';
 var through = require('through2');
 var PluginError = require('gulp-util/lib/PluginError');
-var log = require('fancy-log');
 var applySourceMap = require('vinyl-sourcemaps-apply');
 var saveLicense = require('uglify-save-license');
 var isObject = require('lodash/fp/isObject');
@@ -10,6 +9,7 @@ var map = require('lodash/fp/map');
 var prop = require('lodash/fp/prop');
 var _ = require('lodash/fp/placeholder');
 var defaultsDeep = require('lodash/fp/defaultsDeep');
+var log = require('./lib/log');
 var createError = require('./lib/create-error');
 
 var reSourceMapComment = /\n\/\/# sourceMappingURL=.+?$/;
@@ -29,7 +29,7 @@ function trycatch(fn, handle) {
 
 function setup(opts) {
   if (opts && !isObject(opts)) {
-    log('gulp-uglify expects an object, non-object provided');
+    log.warn('gulp-uglify expects an object, non-object provided');
     opts = {};
   }
 

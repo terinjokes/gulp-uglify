@@ -2,6 +2,7 @@
 var test = require('tape');
 var Vinyl = require('vinyl');
 var uglifyjs = require('uglify-js');
+var gulplog = require('gulplog');
 var gulpUglify = require('../');
 
 var testContentsInput = '"use strict"; (function(console, first, second) { console.log(first + second) }(5, 10))';
@@ -36,9 +37,13 @@ test('should minify files', function (t) {
 });
 
 test('should minify files when string is passed as argument', function (t) {
-  t.plan(7);
+  t.plan(8);
 
   var stream = gulpUglify('build.min.js');
+
+  gulplog.on('warn', function (msg) {
+    t.ok(msg, 'gulp-uglify expects an object, non-object provided');
+  });
 
   stream.on('data', function (newFile) {
     t.ok(newFile, 'emits a file');
