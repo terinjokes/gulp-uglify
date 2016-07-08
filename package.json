@@ -5,10 +5,10 @@
   "author": "Terin Stock <terinjokes@gmail.com>",
   "bugs": "https://github.com/terinjokes/gulp-uglify/issues",
   "dependencies": {
-    "gulp-util": "^3.0.0",
     "gulplog": "^1.0.0",
     "has-gulplog": "^0.1.0",
     "lodash": "^4.13.1",
+    "make-error-cause": "^1.1.1",
     "through2": "^2.0.0",
     "uglify-js": "2.7.0",
     "uglify-save-license": "^0.4.1",

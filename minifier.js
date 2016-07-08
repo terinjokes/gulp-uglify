@@ -1,6 +1,5 @@
 'use strict';
 var through = require('through2');
-var PluginError = require('gulp-util/lib/PluginError');
 var applySourceMap = require('vinyl-sourcemaps-apply');
 var saveLicense = require('uglify-save-license');
 var isObject = require('lodash/fp/isObject');
@@ -11,6 +10,7 @@ var _ = require('lodash/fp/placeholder');
 var defaultsDeep = require('lodash/fp/defaultsDeep');
 var log = require('./lib/log');
 var createError = require('./lib/create-error');
+var GulpUglifyError = require('./lib/gulp-uglify-error');
 
 var reSourceMapComment = /\n\/\/# sourceMappingURL=.+?$/;
 
@@ -59,7 +59,7 @@ module.exports = function (opts, uglify) {
     }
 
     if (file.isStream()) {
-      return callback(createError(file, 'Streaming not supported'));
+      return callback(createError(file, 'Streaming not supported', null));
     }
 
     if (file.sourceMap) {
@@ -79,9 +79,9 @@ module.exports = function (opts, uglify) {
       var m = uglify.minify(map, options);
       m.code = new Buffer(m.code.replace(reSourceMapComment, ''));
       return m;
-    }, createError.bind(null, file));
+    }, createError(file, 'unable to minify JavaScript'));
 
-    if (mangled instanceof PluginError) {
+    if (mangled instanceof GulpUglifyError) {
       return callback(mangled);
     }
 
