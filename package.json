@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "cmem": "^1.0.0",
-    "coveralls": "^2.11.4",
+    "coveralls": "^2.11.11",
     "gulp-concat": "^2.0.0",
     "gulp-sourcemaps": "^1.0.0",
     "istanbul": "^0.4.0",
