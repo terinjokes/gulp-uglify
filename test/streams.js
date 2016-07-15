@@ -1,45 +1,38 @@
 'use strict';
-var Readable = require('stream').Readable;
 var test = require('tape');
 var Vinyl = require('vinyl');
+var mississippi = require('mississippi');
 var GulpUglifyError = require('../lib/gulp-uglify-error');
 var gulpUglify = require('../');
+
+var pipe = mississippi.pipe;
+var to = mississippi.to;
+var from = mississippi.from;
 
 var testFile1 = new Vinyl({
   cwd: '/home/terin/broken-promises/',
   base: '/home/terin/broken-promises/test',
   path: '/home/terin/broken-promises/test/test1.js',
-  contents: stringStream()
+  contents: from('terin')
 });
 
 test('should emit error for stream files', function (t) {
   t.plan(6);
 
-  var stream = gulpUglify();
-
-  stream.on('data', function () {
-    t.fail('should emit error for streams');
-  }).on('error', function (e) {
+  pipe([
+    from.obj([testFile1]),
+    gulpUglify(),
+    to.obj(function (chunk, enc, next) {
+      t.fail('should emit error for streams');
+      next();
+    })
+  ], function (err) {
     t.pass('emitted error');
-    t.ok(e instanceof GulpUglifyError, 'error is a GulpUglifyError');
-    t.equal(e.plugin, 'gulp-uglify', 'error is from gulp-uglify');
-    t.equal(e.fileName, testFile1.path, 'error reports the correct file');
+    t.ok(err instanceof GulpUglifyError, 'error is a GulpUglifyError');
+    t.equal(err.plugin, 'gulp-uglify', 'error is from gulp-uglify');
+    t.equal(err.fileName, testFile1.path, 'error reports the correct file');
 
-    t.ok(e.stack, 'error has a stack');
-    t.false(e.showStack, 'error is configured to not print stack');
+    t.ok(err.stack, 'error has a stack');
+    t.false(err.showStack, 'error is configured to not print stack');
   });
-
-  stream.write(testFile1);
-  stream.end();
 });
-
-function stringStream() {
-  var stream = new Readable();
-
-  stream._read = function () {
-    this.push('terin');
-    this.push(null);
-  };
-
-  return stream;
-}

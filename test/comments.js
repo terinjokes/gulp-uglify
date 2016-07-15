@@ -1,7 +1,12 @@
 'use strict';
 var test = require('tape');
 var Vinyl = require('vinyl');
+var mississippi = require('mississippi');
 var gulpUglify = require('../');
+
+var pipe = mississippi.pipe;
+var to = mississippi.to;
+var from = mississippi.from;
 
 test('should preserve all comments', function (t) {
   t.plan(3);
@@ -13,17 +18,17 @@ test('should preserve all comments', function (t) {
     contents: new Buffer('/* comment one *//*! comment two *//* comment three */')
   });
 
-  var stream = gulpUglify({preserveComments: 'all'});
-
-  stream.on('data', function (newFile) {
-    var contents = newFile.contents.toString();
-    t.ok(/one/.test(contents), 'has comment one');
-    t.ok(/two/.test(contents), 'has comment two');
-    t.ok(/three/.test(contents), 'has comment three');
-  });
-
-  stream.write(testFile1);
-  stream.end();
+  pipe([
+    from.obj([testFile1]),
+    gulpUglify({preserveComments: 'all'}),
+    to.obj(function (newFile, enc, next) {
+      var contents = newFile.contents.toString();
+      t.ok(/one/.test(contents), 'has comment one');
+      t.ok(/two/.test(contents), 'has comment two');
+      t.ok(/three/.test(contents), 'has comment three');
+      next();
+    })
+  ], t.end);
 });
 
 test('should preserve some comments', function (t) {
@@ -36,17 +41,17 @@ test('should preserve some comments', function (t) {
     contents: new Buffer('/* comment one *//*! comment two *//* comment three */')
   });
 
-  var stream = gulpUglify({preserveComments: 'some'});
-
-  stream.on('data', function (newFile) {
-    var contents = newFile.contents.toString();
-    t.false(/one/.test(contents), 'does not have comment one');
-    t.ok(/two/.test(contents), 'has comment two');
-    t.false(/three/.test(contents), 'does not have comment three');
-  });
-
-  stream.write(testFile1);
-  stream.end();
+  pipe([
+    from.obj([testFile1]),
+    gulpUglify({preserveComments: 'some'}),
+    to.obj(function (newFile, enc, next) {
+      var contents = newFile.contents.toString();
+      t.false(/one/.test(contents), 'does not have comment one');
+      t.ok(/two/.test(contents), 'has comment two');
+      t.false(/three/.test(contents), 'does not have comment three');
+      next();
+    })
+  ], t.end);
 });
 
 test('should preserve license comments', function (t) {
@@ -59,17 +64,17 @@ test('should preserve license comments', function (t) {
     contents: new Buffer('"use strict";\nfunction foobar(){}\n/* comment one */\n/* comment two MIT */\nfunction itsatrap(){}\n/* comment three */')
   });
 
-  var stream = gulpUglify({preserveComments: 'license'});
-
-  stream.on('data', function (newFile) {
-    var contents = newFile.contents.toString();
-    t.false(/one/.test(contents), 'does not have comment one');
-    t.ok(/two/.test(contents), 'has comment two');
-    t.false(/three/.test(contents), 'does not have comment three');
-  });
-
-  stream.write(testFile1);
-  stream.end();
+  pipe([
+    from.obj([testFile1]),
+    gulpUglify({preserveComments: 'license'}),
+    to.obj(function (newFile, enc, next) {
+      var contents = newFile.contents.toString();
+      t.false(/one/.test(contents), 'does not have comment one');
+      t.ok(/two/.test(contents), 'has comment two');
+      t.false(/three/.test(contents), 'does not have comment three');
+      next();
+    })
+  ], t.end);
 });
 
 test('should preserve comments that fn returns true for', function (t) {
@@ -82,19 +87,19 @@ test('should preserve comments that fn returns true for', function (t) {
     contents: new Buffer('/* comment one *//*! comment two *//* comment three */')
   });
 
-  var stream = gulpUglify({
-    preserveComments: function (node, comment) {
-      return /three/.test(comment.value);
-    }
-  });
-
-  stream.on('data', function (newFile) {
-    var contents = newFile.contents.toString();
-    t.false(/one/.test(contents), 'does not have comment one');
-    t.false(/two/.test(contents), 'does not have comment two');
-    t.true(/three/.test(contents), 'has comment three');
-  });
-
-  stream.write(testFile1);
-  stream.end();
+  pipe([
+    from.obj([testFile1]),
+    gulpUglify({
+      preserveComments: function (node, comment) {
+        return /three/.test(comment.value);
+      }
+    }),
+    to.obj(function (newFile, enc, next) {
+      var contents = newFile.contents.toString();
+      t.false(/one/.test(contents), 'does not have comment one');
+      t.false(/two/.test(contents), 'does not have comment two');
+      t.true(/three/.test(contents), 'has comment three');
+      next();
+    })
+  ], t.end);
 });
