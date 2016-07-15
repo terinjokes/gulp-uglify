@@ -1,11 +1,16 @@
 'use strict';
 var test = require('tape');
 var Vinyl = require('vinyl');
+var mississippi = require('mississippi');
 var GulpUglifyError = require('../lib/gulp-uglify-error');
 var gulpUglify = require('../');
 
 var testContentsInput = 'function errorFunction(error)\n{';
 var testOkContentsInput = '"use strict"; (function(console, first, second) { console.log(first + second) }(5, 10))';
+
+var pipe = mississippi.pipe;
+var to = mississippi.to;
+var from = mississippi.from;
 
 var testFile1 = new Vinyl({
   cwd: '/home/terin/broken-promises/',
@@ -24,48 +29,44 @@ var testFile2 = new Vinyl({
 test('should report files in error', function (t) {
   t.plan(7);
 
-  var stream = gulpUglify();
-
-  stream.on('data', function () {
-    t.fail('we shouldn\'t have gotten here');
+  pipe([
+    from.obj([testFile1]),
+    gulpUglify(),
+    to.obj(function (chunk, enc, next) {
+      t.fail('we shouldn\t have gotten here');
+      next();
+    })
+  ], function (err) {
+    t.ok(err instanceof Error, 'argument should be of type Error');
+    t.ok(err instanceof GulpUglifyError, 'argument should be of type GulpUglifyError');
+    t.equal(err.plugin, 'gulp-uglify', 'error is from gulp-uglify');
+    t.equal(err.fileName, testFile1.path, 'error reports correct file name');
+    t.equal(err.cause.line, 2, 'error reports correct line number');
+    t.ok(err.stack, 'error has a stack');
+    t.false(err.showStack, 'error is configured to not print the stack');
   });
-
-  stream.on('error', function (e) {
-    t.ok(e instanceof Error, 'argument should be of type Error');
-    t.ok(e instanceof GulpUglifyError, 'argument should be of type GulpUglifyError');
-    t.equal(e.plugin, 'gulp-uglify', 'error is from gulp-uglify');
-    t.equal(e.fileName, testFile1.path, 'error reports correct file name');
-    t.equal(e.cause.line, 2, 'error reports correct line number');
-    t.ok(e.stack, 'error has a stack');
-    t.false(e.showStack, 'error is configured to not print the stack');
-  });
-
-  stream.write(testFile1);
-  stream.end();
 });
 
 test('shouldn\'t blow up when given output options', function (t) {
   t.plan(6);
 
-  var stream = gulpUglify({
-    output: {
-      exportAll: true
-    }
+  pipe([
+    from.obj([testFile2]),
+    gulpUglify({
+      output: {
+        exportAll: true
+      }
+    }),
+    to.obj(function (chunk, enc, next) {
+      t.fail('We shouldn\'t have gotten here');
+      next();
+    })
+  ], function (err) {
+    t.ok(err instanceof Error, 'argument should be of type Error');
+    t.ok(err instanceof GulpUglifyError, 'argument should be of type GulpUglifyError');
+    t.equals(err.cause.msg, '`exportAll` is not a supported option');
+    t.equal(err.plugin, 'gulp-uglify', 'error is from gulp-uglify');
+    t.equal(err.fileName, testFile2.path, 'error reports correct file name');
+    t.false(err.showStack, 'error is configured to not print the stack');
   });
-
-  stream.on('data', function () {
-    t.fail('We shouldn\'t have gotten here');
-  });
-
-  stream.on('error', function (e) {
-    t.ok(e instanceof Error, 'argument should be of type Error');
-    t.ok(e instanceof GulpUglifyError, 'argument should be of type GulpUglifyError');
-    t.equals(e.cause.msg, '`exportAll` is not a supported option');
-    t.equal(e.plugin, 'gulp-uglify', 'error is from gulp-uglify');
-    t.equal(e.fileName, testFile2.path, 'error reports correct file name');
-    t.false(e.showStack, 'error is configured to not print the stack');
-  });
-
-  stream.write(testFile2);
-  stream.end();
 });

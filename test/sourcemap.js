@@ -4,7 +4,12 @@ var Vinyl = require('vinyl');
 var uglifyjs = require('uglify-js');
 var concat = require('gulp-concat');
 var sourcemaps = require('gulp-sourcemaps');
+var mississippi = require('mississippi');
 var gulpUglify = require('../');
+
+var pipe = mississippi.pipe;
+var to = mississippi.to;
+var from = mississippi.from;
 
 var testContents1Input = '(function(first, second) {\n    console.log(first + second);\n}(5, 10));\n';
 var testContents1Expected = uglifyjs.minify(testContents1Input, {fromString: true}).code;
@@ -22,28 +27,28 @@ test('should minify files', function (t) {
     contents: new Buffer(testContents1Input)
   });
 
-  var sm = sourcemaps.init();
-  var mangled = sm.pipe(gulpUglify());
+  pipe([
+    from.obj([testFile1]),
+    sourcemaps.init(),
+    gulpUglify(),
+    to.obj(function (newFile, enc, next) {
+      t.ok(newFile, 'emits a file');
+      t.ok(newFile.path, 'file has a path');
+      t.ok(newFile.relative, 'file has relative path information');
+      t.ok(newFile.contents, 'file has contents');
 
-  mangled.on('data', function (newFile) {
-    t.ok(newFile, 'emits a file');
-    t.ok(newFile.path, 'file has a path');
-    t.ok(newFile.relative, 'file has relative path information');
-    t.ok(newFile.contents, 'file has contents');
+      t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
 
-    t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+      t.equals(String(newFile.contents), testContents1Expected);
 
-    t.equals(String(newFile.contents), testContents1Expected);
-
-    t.ok(newFile.sourceMap, 'has a source map');
-    t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
-    t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
-    t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
-    t.ok(newFile.sourceMap.mappings, 'source map has mappings');
-  });
-
-  sm.write(testFile1);
-  sm.end();
+      t.ok(newFile.sourceMap, 'has a source map');
+      t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
+      t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
+      t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
+      t.ok(newFile.sourceMap.mappings, 'source map has mappings');
+      next();
+    })
+  ], t.end);
 });
 
 test('should merge source maps correctly', function (t) {
@@ -63,31 +68,30 @@ test('should merge source maps correctly', function (t) {
     contents: new Buffer(testContents2Input)
   });
 
-  var sm = sourcemaps.init();
-  var ct = sm.pipe(concat('all.js'));
-  var mangled = ct.pipe(gulpUglify());
+  pipe([
+    from.obj([testFile1, testFile2]),
+    sourcemaps.init(),
+    concat('all.js'),
+    gulpUglify(),
+    to.obj(function (newFile, enc, next) {
+      t.ok(newFile, 'emits a file');
+      t.ok(newFile.path, 'file has a path');
+      t.ok(newFile.relative, 'file has relative path information');
+      t.ok(newFile.contents, 'file has contents');
 
-  mangled.on('data', function (newFile) {
-    t.ok(newFile, 'emits a file');
-    t.ok(newFile.path, 'file has a path');
-    t.ok(newFile.relative, 'file has relative path information');
-    t.ok(newFile.contents, 'file has contents');
+      t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
 
-    t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+      t.equals(String(newFile.contents), testConcatExpected);
 
-    t.equals(String(newFile.contents), testConcatExpected);
-
-    t.ok(newFile.sourceMap, 'has a source map');
-    t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
-    t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
-    t.deepEquals(newFile.sourceMap.sources, ['test1.js', 'test2.js'], 'sources array has the inputs');
-    t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
-    t.ok(newFile.sourceMap.mappings, 'source map has mappings');
-  });
-
-  sm.write(testFile1);
-  sm.write(testFile2);
-  sm.end();
+      t.ok(newFile.sourceMap, 'has a source map');
+      t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
+      t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
+      t.deepEquals(newFile.sourceMap.sources, ['test1.js', 'test2.js'], 'sources array has the inputs');
+      t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
+      t.ok(newFile.sourceMap.mappings, 'source map has mappings');
+      next();
+    })
+  ], t.end);
 });
 
 test('should not remember source maps across files', function (t) {
@@ -127,36 +131,35 @@ test('should not remember source maps across files', function (t) {
   };
   var testFile2SourcesContent = [].slice.call(testFile2.sourceMap.sourcesContent);
 
-  var mangled = gulpUglify();
+  pipe([
+    from.obj([testFile1, testFile2]),
+    gulpUglify(),
+    to.obj(function (newFile, enc, next) {
+      t.ok(newFile, 'emits a file');
+      t.ok(newFile.path, 'file has a path');
+      t.ok(newFile.relative, 'file has relative path information');
+      t.ok(newFile.contents, 'file has contents');
 
-  mangled.on('data', function (newFile) {
-    t.ok(newFile, 'emits a file');
-    t.ok(newFile.path, 'file has a path');
-    t.ok(newFile.relative, 'file has relative path information');
-    t.ok(newFile.contents, 'file has contents');
+      t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
 
-    t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+      if (/test1\.js/.test(newFile.path)) {
+        t.equals(String(newFile.contents), testContents1Expected);
+        t.deepEquals(newFile.sourceMap.sources, ['test1.ts']);
+        t.deepEquals(testFile1SourcesContent, newFile.sourceMap.sourcesContent);
+      } else if (/test2\.js/.test(newFile.path)) {
+        t.equals(String(newFile.contents), testContents2Expected);
+        t.deepEquals(newFile.sourceMap.sources, ['test2.ts']);
+        t.deepEquals(testFile2SourcesContent, newFile.sourceMap.sourcesContent);
+      }
 
-    if (/test1\.js/.test(newFile.path)) {
-      t.equals(String(newFile.contents), testContents1Expected);
-      t.deepEquals(newFile.sourceMap.sources, ['test1.ts']);
-      t.deepEquals(testFile1SourcesContent, newFile.sourceMap.sourcesContent);
-    } else if (/test2\.js/.test(newFile.path)) {
-      t.equals(String(newFile.contents), testContents2Expected);
-      t.deepEquals(newFile.sourceMap.sources, ['test2.ts']);
-      t.deepEquals(testFile2SourcesContent, newFile.sourceMap.sourcesContent);
-    }
-
-    t.ok(newFile.sourceMap, 'has a source map');
-    t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
-    t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
-    t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
-    t.ok(newFile.sourceMap.mappings, 'source map has mappings');
-  });
-
-  mangled.write(testFile1);
-  mangled.write(testFile2);
-  mangled.end();
+      t.ok(newFile.sourceMap, 'has a source map');
+      t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
+      t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
+      t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
+      t.ok(newFile.sourceMap.mappings, 'source map has mappings');
+      next();
+    })
+  ], t.end);
 });
 
 test('should avoid "ghost" files in sourcemaps', function (t) {
@@ -180,28 +183,28 @@ test('should avoid "ghost" files in sourcemaps', function (t) {
     sourcesContent: [testContents1Input]
   };
 
-  var mangled = gulpUglify();
+  pipe([
+    from.obj([testFile1]),
+    gulpUglify(),
+    to.obj(function (newFile, enc, next) {
+      t.ok(newFile, 'emits a file');
+      t.ok(newFile.path, 'file has a path');
+      t.ok(newFile.relative, 'file has relative path information');
+      t.ok(newFile.contents, 'file has contents');
 
-  mangled.on('data', function (newFile) {
-    t.ok(newFile, 'emits a file');
-    t.ok(newFile.path, 'file has a path');
-    t.ok(newFile.relative, 'file has relative path information');
-    t.ok(newFile.contents, 'file has contents');
+      t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
 
-    t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+      t.equals(String(newFile.contents), testBabelExpected);
 
-    t.equals(String(newFile.contents), testBabelExpected);
-
-    t.ok(newFile.sourceMap, 'has a source map');
-    t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
-    t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
-    t.deepEquals(newFile.sourceMap.sources, ['test1.js'], 'sources array has the inputs');
-    t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
-    t.ok(newFile.sourceMap.mappings, 'source map has mappings');
-    t.ok(Array.isArray(newFile.sourceMap.sourcesContent), 'source maps has sources content array');
-    t.deepEquals(newFile.sourceMap.sourcesContent, [testContents1Input], 'sources array has the inputs');
-  });
-
-  mangled.write(testFile1);
-  mangled.end();
+      t.ok(newFile.sourceMap, 'has a source map');
+      t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
+      t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
+      t.deepEquals(newFile.sourceMap.sources, ['test1.js'], 'sources array has the inputs');
+      t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
+      t.ok(newFile.sourceMap.mappings, 'source map has mappings');
+      t.ok(Array.isArray(newFile.sourceMap.sourcesContent), 'source maps has sources content array');
+      t.deepEquals(newFile.sourceMap.sourcesContent, [testContents1Input], 'sources array has the inputs');
+      next();
+    })
+  ], t.end);
 });
