@@ -15,13 +15,13 @@
     "vinyl-sourcemaps-apply": "^0.2.0"
   },
   "devDependencies": {
-    "cmem": "^1.0.0",
     "coveralls": "^2.11.4",
     "gulp-concat": "^2.0.0",
     "gulp-sourcemaps": "^1.0.0",
     "istanbul": "^0.4.0",
     "mississippi": "^1.2.0",
     "tape": "^4.0.0",
+    "testdouble": "^1.6.0",
     "vinyl": "^1.0.0",
     "xo": "^0.16.0"
   },
