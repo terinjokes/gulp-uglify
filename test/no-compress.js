@@ -1,5 +1,6 @@
 'use strict';
-var test = require('tape');
+var mocha = require('mocha');
+var assert = require('power-assert');
 var Vinyl = require('vinyl');
 var uglifyjs = require('uglify-js');
 var mississippi = require('mississippi');
@@ -9,38 +10,41 @@ var pipe = mississippi.pipe;
 var to = mississippi.to;
 var from = mississippi.from;
 
-var testContentsInput = '"use strict"; (function(console, first, second) {\n\tconsole.log(first + second)\n}(5, 10))';
-var testContentsExpected = uglifyjs.minify(testContentsInput, {
-  fromString: true,
-  compress: false
-}).code;
+var describe = mocha.describe;
+var it = mocha.it;
 
-var testFile1 = new Vinyl({
-  cwd: '/home/terin/broken-promises/',
-  base: '/home/terin/broken-promises/test',
-  path: '/home/terin/broken-promises/test/test1.js',
-  contents: new Buffer(testContentsInput)
-});
-
-test('should not compress files when `compress: false`', function (t) {
-  t.plan(7);
-
-  pipe([
-    from.obj([testFile1]),
-    gulpUglify({
+describe('no-compress', function () {
+  it('should not compress files when `compress: false`', function (done) {
+    var testContentsInput = '"use strict"; (function(console, first, second) {\n\tconsole.log(first + second)\n}(5, 10))';
+    var testContentsExpected = uglifyjs.minify(testContentsInput, {
+      fromString: true,
       compress: false
-    }),
-    to.obj(function (newFile, enc, next) {
-      t.ok(newFile, 'emits a file');
-      t.ok(newFile.path, 'file has a path');
-      t.ok(newFile.relative, 'file has relative path information');
-      t.ok(newFile.contents, 'file has contents');
+    }).code;
 
-      t.ok(newFile instanceof Vinyl, 'file is Vinyl');
-      t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+    var testFile1 = new Vinyl({
+      cwd: '/home/terin/broken-promises/',
+      base: '/home/terin/broken-promises/test',
+      path: '/home/terin/broken-promises/test/test1.js',
+      contents: new Buffer(testContentsInput)
+    });
 
-      t.equals(String(newFile.contents), testContentsExpected);
-      next();
-    })
-  ], t.end);
+    pipe([
+      from.obj([testFile1]),
+      gulpUglify({
+        compress: false
+      }),
+      to.obj(function (newFile, enc, next) {
+        assert.ok(newFile, 'emits a file');
+        assert.ok(newFile.path, 'file has a path');
+        assert.ok(newFile.relative, 'file has relative path information');
+        assert.ok(newFile.contents, 'file has contents');
+
+        assert.ok(newFile instanceof Vinyl, 'file is Vinyl');
+        assert.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+
+        assert.equal(String(newFile.contents), testContentsExpected);
+        next();
+      })
+    ], done);
+  });
 });
