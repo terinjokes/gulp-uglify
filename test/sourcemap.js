@@ -1,5 +1,6 @@
 'use strict';
-var test = require('tape');
+var mocha = require('mocha');
+var assert = require('power-assert');
 var Vinyl = require('vinyl');
 var uglifyjs = require('uglify-js');
 var concat = require('gulp-concat');
@@ -11,200 +12,183 @@ var pipe = mississippi.pipe;
 var to = mississippi.to;
 var from = mississippi.from;
 
-var testContents1Input = '(function(first, second) {\n    console.log(first + second);\n}(5, 10));\n';
-var testContents1Expected = uglifyjs.minify(testContents1Input, {fromString: true}).code;
-var testContents2Input = '(function(alert) {\n    alert(5);\n}(alert));\n';
-var testContents2Expected = uglifyjs.minify(testContents2Input, {fromString: true}).code;
-var testConcatExpected = uglifyjs.minify(testContents1Input + '\n' + testContents2Input, {fromString: true}).code;
+var describe = mocha.describe;
+var it = mocha.it;
+var beforeEach = mocha.beforeEach;
 
-test('should minify files', function (t) {
-  t.plan(11);
+describe('source maps', function () {
+  var testContents1Input = '(function(first, second) {\n    console.log(first + second);\n}(5, 10));\n';
+  var testContents1Expected = uglifyjs.minify(testContents1Input, {fromString: true}).code;
+  var testContents2Input = '(function(alert) {\n    alert(5);\n}(alert));\n';
+  var testContents2Expected = uglifyjs.minify(testContents2Input, {fromString: true}).code;
+  var testConcatExpected = uglifyjs.minify(testContents1Input + '\n' + testContents2Input, {fromString: true}).code;
 
-  var testFile1 = new Vinyl({
-    cwd: '/home/terin/broken-promises/',
-    base: '/home/terin/broken-promises/test',
-    path: '/home/terin/broken-promises/test/test1.js',
-    contents: new Buffer(testContents1Input)
+  beforeEach(function () {
+    this.testFile1 = new Vinyl({
+      cwd: '/home/terin/broken-promises/',
+      base: '/home/terin/broken-promises/test',
+      path: '/home/terin/broken-promises/test/test1.js',
+      contents: new Buffer(testContents1Input)
+    });
+
+    this.testFile2 = new Vinyl({
+      cwd: '/home/terin/broken-promises/',
+      base: '/home/terin/broken-promises/test',
+      path: '/home/terin/broken-promises/test/test2.js',
+      contents: new Buffer(testContents2Input)
+    });
   });
 
-  pipe([
-    from.obj([testFile1]),
-    sourcemaps.init(),
-    gulpUglify(),
-    to.obj(function (newFile, enc, next) {
-      t.ok(newFile, 'emits a file');
-      t.ok(newFile.path, 'file has a path');
-      t.ok(newFile.relative, 'file has relative path information');
-      t.ok(newFile.contents, 'file has contents');
+  describe('init-ed source maps', function () {
+    it('should merge into full source map', function (done) {
+      pipe([
+        from.obj([this.testFile1]),
+        sourcemaps.init(),
+        gulpUglify(),
+        to.obj(function (newFile, enc, next) {
+          assert.ok(newFile, 'emits a file');
+          assert.ok(newFile.path, 'file has a path');
+          assert.ok(newFile.relative, 'file has relative path information');
+          assert.ok(newFile.contents, 'file has contents');
 
-      t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+          assert.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
 
-      t.equals(String(newFile.contents), testContents1Expected);
+          assert.equal(String(newFile.contents), testContents1Expected);
 
-      t.ok(newFile.sourceMap, 'has a source map');
-      t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
-      t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
-      t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
-      t.ok(newFile.sourceMap.mappings, 'source map has mappings');
-      next();
-    })
-  ], t.end);
-});
+          assert.ok(newFile.sourceMap, 'has a source map');
+          assert.equal(newFile.sourceMap.version, 3, 'source map has expected version');
+          assert.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
+          assert.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
+          assert.ok(newFile.sourceMap.mappings, 'source map has mappings');
+          next();
+        })
+      ], done);
+    });
 
-test('should merge source maps correctly', function (t) {
-  t.plan(12);
+    it('should merge concated source maps', function (done) {
+      pipe([
+        from.obj([this.testFile1, this.testFile2]),
+        sourcemaps.init(),
+        concat('all.js'),
+        gulpUglify(),
+        to.obj(function (newFile, enc, next) {
+          assert.ok(newFile, 'emits a file');
+          assert.ok(newFile.path, 'file has a path');
+          assert.ok(newFile.relative, 'file has relative path information');
+          assert.ok(newFile.contents, 'file has contents');
 
-  var testFile1 = new Vinyl({
-    cwd: '/home/terin/broken-promises/',
-    base: '/home/terin/broken-promises/test',
-    path: '/home/terin/broken-promises/test/test1.js',
-    contents: new Buffer(testContents1Input)
+          assert.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+
+          assert.equal(String(newFile.contents), testConcatExpected);
+
+          assert.ok(newFile.sourceMap, 'has a source map');
+          assert.equal(newFile.sourceMap.version, 3, 'source map has expected version');
+          assert.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
+          assert.deepEqual(newFile.sourceMap.sources, ['test1.js', 'test2.js'], 'sources array has the inputs');
+          assert.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
+          assert.ok(newFile.sourceMap.mappings, 'source map has mappings');
+          next();
+        })
+      ], done);
+    });
   });
 
-  var testFile2 = new Vinyl({
-    cwd: '/home/terin/broken-promises/',
-    base: '/home/terin/broken-promises/test',
-    path: '/home/terin/broken-promises/test/test2.js',
-    contents: new Buffer(testContents2Input)
+  it('should not remember source maps across files', function (done) {
+    this.testFile1.sourceMap = {
+      version: 3,
+      file: 'test1.js',
+      sourceRoot: '',
+      sources: ['test1.ts'],
+      sourcesContent: ['(function(first, second) { console.log(first + second) }(5, 10))'],
+      names: [],
+      mappings: 'AAAA,CAAC,UAAS,KAAK,EAAE,MAAM;IAAI,OAAO,CAAC,GAAG,CAAC,KAAK,GAAG,MAAM,CAAC;AAAC,CAAC,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC'
+    };
+    var testFile1SourcesContent = [].slice.call(this.testFile1.sourceMap.sourcesContent);
+
+    this.testFile2.sourceMap = {
+      version: 3,
+      file: 'test2.js',
+      sourceRoot: '',
+      sources: ['test2.ts'],
+      sourcesContent: ['(function(alert) { alert(5); }(alert))'],
+      names: [],
+      mappings: 'AAAA,CAAC,UAAS,KAAK;IAAI,KAAK,CAAC,CAAC,CAAC;AAAE,CAAC,CAAC,KAAK,CAAC,CAAC'
+    };
+    var testFile2SourcesContent = [].slice.call(this.testFile2.sourceMap.sourcesContent);
+
+    pipe([
+      from.obj([this.testFile1, this.testFile2]),
+      gulpUglify(),
+      to.obj(function (newFile, enc, next) {
+        assert.ok(newFile, 'emits a file');
+        assert.ok(newFile.path, 'file has a path');
+        assert.ok(newFile.relative, 'file has relative path information');
+        assert.ok(newFile.contents, 'file has contents');
+
+        assert.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+
+        if (/test1\.js/.test(newFile.path)) {
+          assert.equal(String(newFile.contents), testContents1Expected);
+          assert.deepEqual(newFile.sourceMap.sources, ['test1.ts']);
+          assert.deepEqual(testFile1SourcesContent, newFile.sourceMap.sourcesContent);
+        } else if (/test2\.js/.test(newFile.path)) {
+          assert.equal(String(newFile.contents), testContents2Expected);
+          assert.deepEqual(newFile.sourceMap.sources, ['test2.ts']);
+          assert.deepEqual(testFile2SourcesContent, newFile.sourceMap.sourcesContent);
+        }
+
+        assert.ok(newFile.sourceMap, 'has a source map');
+        assert.equal(newFile.sourceMap.version, 3, 'source map has expected version');
+        assert.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
+        assert.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
+        assert.ok(newFile.sourceMap.mappings, 'source map has mappings');
+        next();
+      })
+    ], done);
   });
 
-  pipe([
-    from.obj([testFile1, testFile2]),
-    sourcemaps.init(),
-    concat('all.js'),
-    gulpUglify(),
-    to.obj(function (newFile, enc, next) {
-      t.ok(newFile, 'emits a file');
-      t.ok(newFile.path, 'file has a path');
-      t.ok(newFile.relative, 'file has relative path information');
-      t.ok(newFile.contents, 'file has contents');
+  it('should avoid "ghost" files in sourcemaps', function (done) {
+    var testBabelInput = '"use strict";\n\n(function (first, second) {\n    console.log(first + second);\n})(5, 10);';
+    var testBabelExpected = uglifyjs.minify(testBabelInput, {fromString: true}).code;
 
-      t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+    var testFile = new Vinyl({
+      cwd: '/home/terin/broken-promises/',
+      base: '/home/terin/broken-promises/test',
+      path: '/home/terin/broken-promises/test/all.js',
+      contents: new Buffer(testBabelInput)
+    });
+    testFile.sourceMap = {
+      version: 3,
+      file: 'all.js',
+      sources: ['test1.js'],
+      names: [],
+      mappings: ';;AAAA,AAAC,CAAA,UAAS,KAAK,EAAE,MAAM,EAAE;AACrB,WAAO,CAAC,GAAG,CAAC,KAAK,GAAG,MAAM,CAAC,CAAC;CAC/B,CAAA,CAAC,CAAC,EAAE,EAAE,CAAC,CAAE',
+      sourcesContent: [testContents1Input]
+    };
 
-      t.equals(String(newFile.contents), testConcatExpected);
+    pipe([
+      from.obj([testFile]),
+      gulpUglify(),
+      to.obj(function (newFile, enc, next) {
+        assert.ok(newFile, 'emits a file');
+        assert.ok(newFile.path, 'file has a path');
+        assert.ok(newFile.relative, 'file has relative path information');
+        assert.ok(newFile.contents, 'file has contents');
 
-      t.ok(newFile.sourceMap, 'has a source map');
-      t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
-      t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
-      t.deepEquals(newFile.sourceMap.sources, ['test1.js', 'test2.js'], 'sources array has the inputs');
-      t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
-      t.ok(newFile.sourceMap.mappings, 'source map has mappings');
-      next();
-    })
-  ], t.end);
-});
+        assert.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
 
-test('should not remember source maps across files', function (t) {
-  t.plan(26);
+        assert.equal(String(newFile.contents), testBabelExpected);
 
-  var testFile1 = new Vinyl({
-    cwd: '/home/terin/broken-promises/',
-    base: '/home/terin/broken-promises/test',
-    path: '/home/terin/broken-promises/test/test1.js',
-    contents: new Buffer(testContents1Input)
+        assert.ok(newFile.sourceMap, 'has a source map');
+        assert.equal(newFile.sourceMap.version, 3, 'source map has expected version');
+        assert.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
+        assert.deepEqual(newFile.sourceMap.sources, ['test1.js'], 'sources array has the inputs');
+        assert.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
+        assert.ok(newFile.sourceMap.mappings, 'source map has mappings');
+        assert.ok(Array.isArray(newFile.sourceMap.sourcesContent), 'source maps has sources content array');
+        assert.deepEqual(newFile.sourceMap.sourcesContent, [testContents1Input], 'sources array has the inputs');
+        next();
+      })
+    ], done);
   });
-  testFile1.sourceMap = {
-    version: 3,
-    file: 'test1.js',
-    sourceRoot: '',
-    sources: ['test1.ts'],
-    sourcesContent: ['(function(first, second) { console.log(first + second) }(5, 10))'],
-    names: [],
-    mappings: 'AAAA,CAAC,UAAS,KAAK,EAAE,MAAM;IAAI,OAAO,CAAC,GAAG,CAAC,KAAK,GAAG,MAAM,CAAC;AAAC,CAAC,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC'
-  };
-  var testFile1SourcesContent = [].slice.call(testFile1.sourceMap.sourcesContent);
-
-  var testFile2 = new Vinyl({
-    cwd: '/home/terin/broken-promises/',
-    base: '/home/terin/broken-promises/test',
-    path: '/home/terin/broken-promises/test/test2.js',
-    contents: new Buffer(testContents2Input)
-  });
-  testFile2.sourceMap = {
-    version: 3,
-    file: 'test2.js',
-    sourceRoot: '',
-    sources: ['test2.ts'],
-    sourcesContent: ['(function(alert) { alert(5); }(alert))'],
-    names: [],
-    mappings: 'AAAA,CAAC,UAAS,KAAK;IAAI,KAAK,CAAC,CAAC,CAAC;AAAE,CAAC,CAAC,KAAK,CAAC,CAAC'
-  };
-  var testFile2SourcesContent = [].slice.call(testFile2.sourceMap.sourcesContent);
-
-  pipe([
-    from.obj([testFile1, testFile2]),
-    gulpUglify(),
-    to.obj(function (newFile, enc, next) {
-      t.ok(newFile, 'emits a file');
-      t.ok(newFile.path, 'file has a path');
-      t.ok(newFile.relative, 'file has relative path information');
-      t.ok(newFile.contents, 'file has contents');
-
-      t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
-
-      if (/test1\.js/.test(newFile.path)) {
-        t.equals(String(newFile.contents), testContents1Expected);
-        t.deepEquals(newFile.sourceMap.sources, ['test1.ts']);
-        t.deepEquals(testFile1SourcesContent, newFile.sourceMap.sourcesContent);
-      } else if (/test2\.js/.test(newFile.path)) {
-        t.equals(String(newFile.contents), testContents2Expected);
-        t.deepEquals(newFile.sourceMap.sources, ['test2.ts']);
-        t.deepEquals(testFile2SourcesContent, newFile.sourceMap.sourcesContent);
-      }
-
-      t.ok(newFile.sourceMap, 'has a source map');
-      t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
-      t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
-      t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
-      t.ok(newFile.sourceMap.mappings, 'source map has mappings');
-      next();
-    })
-  ], t.end);
-});
-
-test('should avoid "ghost" files in sourcemaps', function (t) {
-  t.plan(14);
-
-  var testBabelInput = '"use strict";\n\n(function (first, second) {\n    console.log(first + second);\n})(5, 10);';
-  var testBabelExpected = uglifyjs.minify(testBabelInput, {fromString: true}).code;
-
-  var testFile1 = new Vinyl({
-    cwd: '/home/terin/broken-promises/',
-    base: '/home/terin/broken-promises/test',
-    path: '/home/terin/broken-promises/test/all.js',
-    contents: new Buffer(testBabelInput)
-  });
-  testFile1.sourceMap = {
-    version: 3,
-    file: 'all.js',
-    sources: ['test1.js'],
-    names: [],
-    mappings: ';;AAAA,AAAC,CAAA,UAAS,KAAK,EAAE,MAAM,EAAE;AACrB,WAAO,CAAC,GAAG,CAAC,KAAK,GAAG,MAAM,CAAC,CAAC;CAC/B,CAAA,CAAC,CAAC,EAAE,EAAE,CAAC,CAAE',
-    sourcesContent: [testContents1Input]
-  };
-
-  pipe([
-    from.obj([testFile1]),
-    gulpUglify(),
-    to.obj(function (newFile, enc, next) {
-      t.ok(newFile, 'emits a file');
-      t.ok(newFile.path, 'file has a path');
-      t.ok(newFile.relative, 'file has relative path information');
-      t.ok(newFile.contents, 'file has contents');
-
-      t.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
-
-      t.equals(String(newFile.contents), testBabelExpected);
-
-      t.ok(newFile.sourceMap, 'has a source map');
-      t.equals(newFile.sourceMap.version, 3, 'source map has expected version');
-      t.ok(Array.isArray(newFile.sourceMap.sources), 'source map has sources array');
-      t.deepEquals(newFile.sourceMap.sources, ['test1.js'], 'sources array has the inputs');
-      t.ok(Array.isArray(newFile.sourceMap.names), 'source maps has names array');
-      t.ok(newFile.sourceMap.mappings, 'source map has mappings');
-      t.ok(Array.isArray(newFile.sourceMap.sourcesContent), 'source maps has sources content array');
-      t.deepEquals(newFile.sourceMap.sourcesContent, [testContents1Input], 'sources array has the inputs');
-      next();
-    })
-  ], t.end);
 });

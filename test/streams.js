@@ -1,5 +1,6 @@
 'use strict';
-var test = require('tape');
+var mocha = require('mocha');
+var assert = require('power-assert');
 var Vinyl = require('vinyl');
 var mississippi = require('mississippi');
 var GulpUglifyError = require('../lib/gulp-uglify-error');
@@ -9,30 +10,33 @@ var pipe = mississippi.pipe;
 var to = mississippi.to;
 var from = mississippi.from;
 
-var testFile1 = new Vinyl({
-  cwd: '/home/terin/broken-promises/',
-  base: '/home/terin/broken-promises/test',
-  path: '/home/terin/broken-promises/test/test1.js',
-  contents: from('terin')
-});
+var describe = mocha.describe;
+var it = mocha.it;
 
-test('should emit error for stream files', function (t) {
-  t.plan(6);
+describe('stream Vinyl contents', function () {
+  var testFile = new Vinyl({
+    cwd: '/home/terin/broken-promises/',
+    base: '/home/terin/broken-promises/test',
+    path: '/home/terin/broken-promises/test/test1.js',
+    contents: from('terin')
+  });
 
-  pipe([
-    from.obj([testFile1]),
-    gulpUglify(),
-    to.obj(function (chunk, enc, next) {
-      t.fail('should emit error for streams');
-      next();
-    })
-  ], function (err) {
-    t.pass('emitted error');
-    t.ok(err instanceof GulpUglifyError, 'error is a GulpUglifyError');
-    t.equal(err.plugin, 'gulp-uglify', 'error is from gulp-uglify');
-    t.equal(err.fileName, testFile1.path, 'error reports the correct file');
+  it('should emit error for stream files', function (done) {
+    pipe([
+      from.obj([testFile]),
+      gulpUglify(),
+      to.obj(function (chunk, enc, next) {
+        assert(false, 'should emit error for streams');
+        next();
+      })
+    ], function (err) {
+      assert.ok(err instanceof GulpUglifyError, 'error is a GulpUglifyError');
+      assert.equal(err.plugin, 'gulp-uglify', 'error is from gulp-uglify');
+      assert.equal(err.fileName, testFile.path, 'error reports the correct file');
 
-    t.ok(err.stack, 'error has a stack');
-    t.false(err.showStack, 'error is configured to not print stack');
+      assert.ok(err.stack, 'error has a stack');
+      assert.ok(!err.showStack, 'error is configured to not print stack');
+      done();
+    });
   });
 });
