@@ -103,7 +103,7 @@ It's possible to configure the use of a different version using the "minifier" e
 ```javascript
 var uglifyjs = require('uglify-js'); // can be a git checkout
                                      // or another module (such as `uglify-js-harmony` for ES6 support)
-var minifer = require('gulp-uglify/minifier');
+var minifier = require('gulp-uglify/minifier');
 var pump = require('pump');
 
 gulp.task('compress', function (cb) {
