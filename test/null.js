@@ -1,31 +1,43 @@
 'use strict';
-var test = require('tape');
+var mocha = require('mocha');
+var assert = require('power-assert');
 var Vinyl = require('vinyl');
+var mississippi = require('mississippi');
 var gulpUglify = require('../');
 
-var testFile1 = new Vinyl({
-  cwd: '/home/terin/broken-promises/',
-  base: '/home/terin/broken-promises/test',
-  path: '/home/terin/broken-promises/test/test1.js',
-  contents: null
-});
+var describe = mocha.describe;
+var it = mocha.it;
+var beforeEach = mocha.beforeEach;
 
-test('should leave null files as is', function (t) {
-  t.plan(6);
+var pipe = mississippi.pipe;
+var to = mississippi.to;
+var from = mississippi.from;
 
-  var stream = gulpUglify();
-
-  stream.on('data', function (newFile) {
-    t.ok(newFile, 'emits a file');
-    t.ok(newFile.path, 'file has a path');
-    t.ok(newFile.relative, 'file has relative path information');
-    t.ok(!newFile.contents, 'file does not have contents');
-
-    t.ok(newFile instanceof Vinyl, 'file is Vinyl');
-
-    t.equals(newFile.contents, null);
+describe('null Vinyl contents', function () {
+  beforeEach(function () {
+    this.testFile = new Vinyl({
+      cwd: '/home/terin/broken-promises/',
+      base: '/home/terin/broken-promises/test',
+      path: '/home/terin/broken-promises/test/test1.js',
+      contents: null
+    });
   });
 
-  stream.write(testFile1);
-  stream.end();
+  it('should passthrough null files', function (done) {
+    pipe([
+      from.obj([this.testFile]),
+      gulpUglify(),
+      to.obj(function (newFile, enc, next) {
+        assert.ok(newFile, 'emits a file');
+        assert.ok(newFile.path, 'file has a path');
+        assert.ok(newFile.relative, 'file has relative path information');
+        assert.ok(!newFile.contents, 'file does not have contents');
+
+        assert.ok(newFile instanceof Vinyl, 'file is Vinyl');
+
+        assert.strictEqual(newFile.contents, null);
+        next();
+      })
+    ], done);
+  });
 });
