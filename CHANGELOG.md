@@ -1,13 +1,9 @@
-# Change Log
+As of version 2.0.0, the CHANGELOG is maintained on [GitHub Releases](https://github.com/terinjokes/gulp-uglify/releases).
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+# Change Log
 
 <a name="1.5.4"></a>
 ## [1.5.4](https://github.com/terinjokes/gulp-uglify/compare/v1.5.3...v1.5.4) (2016-06-22)
-
-
-
-# gulp-uglify changelog
 
 ## 1.5.3
 
