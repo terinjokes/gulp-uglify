@@ -56,7 +56,7 @@ gulp.task('compress', function () {
 });
 ```
 
-Unfortunately, Node.js stream’s `pipe` function doesn’t forward errors throught
+Unfortunately, Node.js stream’s `pipe` function doesn’t forward errors through
 the chain, so this error handler only handles the errors given by
 `gulp.dest`. Instead we need to handle errors for each stream.
 
