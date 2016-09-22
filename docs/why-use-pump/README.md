@@ -13,7 +13,7 @@ the gulp tool to handle errors.
 ```javascript
 // example of a common gulpfil
 var gulp = require('gulp');
-var uglify = require('uglify');
+var uglify = require('gulp-uglify');
 
 gulp.task('compress', function () {
   // returns a Node.js stream, but no handling of error messages
@@ -44,7 +44,7 @@ useful, we should handle the exceptions properly. Let’s give that a quick shot
 
 ```javascript
 var gulp = require('gulp');
-var uglify = require('uglify');
+var uglify = require('gulp-uglify');
 
 gulp.task('compress', function () {
   return gulp.src('lib/*.js')
@@ -62,7 +62,7 @@ the chain, so this error handler only handles the errors given by
 
 ```javascript
 var gulp = require('gulp');
-var uglify = require('uglify');
+var uglify = require('gulp-uglify');
 
 gulp.task('compress', function () {
   function createErrorHandler(name) {
@@ -94,7 +94,7 @@ on your gulpfiles, and get back to hacking new features into your app.
 
 ```javascript
 var gulp = require('gulp');
-var uglify = require('uglify');
+var uglify = require('gulp-uglify');
 var pump = require('pump');
 
 gulp.task('compress', function (cb) {
