@@ -35,7 +35,7 @@
   ],
   "license": "MIT",
   "main": "index.js",
-  "repository": "https://github.com/terinjokes/gulp-uglify.git",
+  "repository": "terinjokes/gulp-uglify",
   "xo": {
     "space": true
   },
