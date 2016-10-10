@@ -47,5 +47,10 @@
   "scripts": {
     "test": "xo && mocha --require intelli-espower-loader",
     "coverage": "cat ./coverage/lcov.info | coveralls"
+  },
+  "greenkeeper": {
+    "ignore": [
+      "gulp-sourcemaps"
+    ]
   }
 }
