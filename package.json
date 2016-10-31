@@ -7,7 +7,7 @@
   "dependencies": {
     "gulplog": "^1.0.0",
     "has-gulplog": "^0.1.0",
-    "lodash": "^4.13.1",
+    "lodash": "^4.16.5",
     "make-error-cause": "^1.1.1",
     "through2": "^2.0.0",
     "uglify-js": "2.7.3",
