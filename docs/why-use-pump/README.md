@@ -11,7 +11,7 @@ A common pattern in gulp files is to simply return a Node.js stream, and expect
 the gulp tool to handle errors.
 
 ```javascript
-// example of a common gulpfil
+// example of a common gulpfile
 var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 
