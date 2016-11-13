@@ -27,7 +27,7 @@
     "tape": "^4.0.0",
     "testdouble": "^1.6.0",
     "vinyl": "^2.0.0",
-    "xo": "^0.16.0"
+    "xo": "^0.17.1"
   },
   "homepage": "https://github.com/terinjokes/gulp-uglify/",
   "keywords": [
