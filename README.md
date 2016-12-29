@@ -93,13 +93,15 @@ The GulpUglifyError constructor is exported by this plugin for `instanceof` chec
 It contains the following properties:
 
 - `fileName`: The full file path for the file being minified.
-- `cause`: The original UglifyJS error, if avialable.
+- `cause`: The original UglifyJS error, if available.
 
 Most UglifyJS error messages have the following properties:
 
 - `message` (or `msg`)
 - `filename`
 - `line`
+
+To see useful error messages, see [Why Use Pump?](docs/why-use-pump/README.md#why-use-pump).
 
 ## Using a Different UglifyJS
 
