@@ -8,7 +8,7 @@
     "gulplog": "^1.0.0",
     "has-gulplog": "^0.1.0",
     "lodash": "^4.13.1",
-    "make-error-cause": "^1.1.1",
+    "make-error-cause": "^1.2.2",
     "through2": "^2.0.0",
     "uglify-js": "~2.8.10",
     "uglify-save-license": "^0.4.1",
