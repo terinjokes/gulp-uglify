@@ -63,7 +63,7 @@ describe('stream errors', function () {
     ], function (err) {
       assert.ok(err instanceof Error, 'argument should be of type Error');
       assert.ok(err instanceof GulpUglifyError, 'argument should be of type GulpUglifyError');
-      assert.equal(err.cause.msg, '`exportAll` is not a supported option');
+      assert.equal(err.cause.message, '`exportAll` is not a supported option');
       assert.equal(err.plugin, 'gulp-uglify', 'error is from gulp-uglify');
       assert.equal(err.fileName, testFile.path, 'error reports correct file name');
       assert.ok(!err.showStack, 'error is configured to not print the stack');
