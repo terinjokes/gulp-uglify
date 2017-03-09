@@ -25,7 +25,7 @@
     "power-assert": "^1.4.1",
     "semver": "^5.3.0",
     "tape": "^4.0.0",
-    "testdouble": "^1.6.0",
+    "testdouble": "^1.11.2",
     "vinyl": "^2.0.0",
     "xo": "^0.16.0"
   },
