@@ -3,6 +3,14 @@ sudo: false
 node_js:
   - 0.10
   - 0.12
-  - 4
+  - 6
+  - 7
+matrix:
+  include:
+    - node_js: 4
+      env: LINT_TEST=true
+script:
+  - "if [[ -n $LINT_TEST ]]; then npm run lint; fi"
+  - npm run test
 after_success:
   - npm run coverage

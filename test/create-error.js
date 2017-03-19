@@ -9,8 +9,8 @@ var describe = mocha.describe;
 var it = mocha.it;
 var beforeEach = mocha.beforeEach;
 
-describe('createError', function () {
-  beforeEach(function () {
+describe('createError', function() {
+  beforeEach(function() {
     var testOkContentsInput = '"use strict"; (function(console, first, second) { console.log(first + second) }(5, 10))';
     this.testFile = new Vinyl({
       cwd: '/home/terin/broken-promises/',
@@ -20,22 +20,28 @@ describe('createError', function () {
     });
   });
 
-  it('should have expected error message', function () {
+  it('should have expected error message', function() {
     var e = createError(this.testFile, 'error message text', null);
 
     assert.ok(e instanceof Error, 'argument should be of type Error');
-    assert.ok(e instanceof GulpUglifyError, 'argument should be of type GulpUglifyError');
+    assert.ok(
+      e instanceof GulpUglifyError,
+      'argument should be of type GulpUglifyError'
+    );
     assert.equal(e.plugin, 'gulp-uglify', 'error is from gulp-uglify');
     assert.equal(e.message, 'error message text');
     assert.ok(!e.cause, 'should not contain a cause');
   });
 
-  it('should wrap cause', function () {
+  it('should wrap cause', function() {
     var cause = new Error('boom!');
     var e = createError(this.testFile, 'error message text', cause);
 
     assert.ok(e instanceof Error, 'argument should be of type Error');
-    assert.ok(e instanceof GulpUglifyError, 'argument should be of type GulpUglifyError');
+    assert.ok(
+      e instanceof GulpUglifyError,
+      'argument should be of type GulpUglifyError'
+    );
     assert.equal(e.plugin, 'gulp-uglify', 'error is from gulp-uglify');
     assert.ok(e.message.match(/^error message text/));
     assert.equal(e.cause, cause);

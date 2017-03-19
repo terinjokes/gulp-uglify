@@ -38,7 +38,7 @@ function setup(opts) {
   if (options.preserveComments === 'all') {
     options.output.comments = true;
   } else if (options.preserveComments === 'some') {
-    // preserve comments with directives or that start with a bang (!)
+    // Preserve comments with directives or that start with a bang (!)
     options.output.comments = /^!|@preserve|@license|@cc_on/i;
   } else if (options.preserveComments === 'license') {
     options.output.comments = saveLicense;
@@ -49,7 +49,7 @@ function setup(opts) {
   return options;
 }
 
-module.exports = function (opts, uglify) {
+module.exports = function(opts, uglify) {
   function minify(file, encoding, callback) {
     var options = setup(opts || {});
     var sources;
@@ -70,16 +70,22 @@ module.exports = function (opts, uglify) {
       }
       options.outSourceMap = file.relative;
 
-      sources = zipObject(file.sourceMap.sources, file.sourceMap.sourcesContent);
+      sources = zipObject(
+        file.sourceMap.sources,
+        file.sourceMap.sourcesContent
+      );
     }
 
-    var mangled = trycatch(function () {
-      var map = {};
-      map[file.relative] = String(file.contents);
-      var m = uglify.minify(map, options);
-      m.code = new Buffer(m.code.replace(reSourceMapComment, ''));
-      return m;
-    }, createError(file, 'unable to minify JavaScript'));
+    var mangled = trycatch(
+      function() {
+        var map = {};
+        map[file.relative] = String(file.contents);
+        var m = uglify.minify(map, options);
+        m.code = new Buffer(m.code.replace(reSourceMapComment, ''));
+        return m;
+      },
+      createError(file, 'unable to minify JavaScript')
+    );
 
     if (mangled instanceof GulpUglifyError) {
       return callback(mangled);

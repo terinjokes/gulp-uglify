@@ -2,6 +2,6 @@
 var td = require('testdouble');
 var mocha = require('mocha');
 
-mocha.afterEach(function () {
+mocha.afterEach(function() {
   td.reset();
 });

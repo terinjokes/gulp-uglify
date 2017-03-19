@@ -13,8 +13,8 @@ var to = mississippi.to;
 var describe = mocha.describe;
 var it = mocha.it;
 
-describe('injecting mocha', function () {
-  it('should minify files', function (done) {
+describe('injecting mocha', function() {
+  it('should minify files', function(done) {
     var testContentsOutput = 'function abs(a, b) {\n  return a > b; }';
     var testContentsInput = 'function testInput() {}';
     var testFile = new Vinyl({
@@ -26,31 +26,44 @@ describe('injecting mocha', function () {
 
     var uglifyjs = td.object(['minify']);
 
-    td.when(uglifyjs.minify({
-      'test1.js': testContentsInput
-    }, {
-      injecting: true,
-      fromString: true,
-      output: {}
-    })).thenReturn({
-      code: testContentsOutput
-    });
+    td
+      .when(
+        uglifyjs.minify(
+          {
+            'test1.js': testContentsInput
+          },
+          {
+            injecting: true,
+            fromString: true,
+            output: {}
+          }
+        )
+      )
+      .thenReturn({
+        code: testContentsOutput
+      });
 
-    pipe([
-      from.obj([testFile]),
-      minifer({injecting: true}, uglifyjs),
-      to.obj(function (newFile, enc, next) {
-        assert.ok(newFile, 'emits a file');
-        assert.ok(newFile.path, 'file has a path');
-        assert.ok(newFile.relative, 'file has relative path information');
-        assert.ok(newFile.contents, 'file has contents');
+    pipe(
+      [
+        from.obj([testFile]),
+        minifer({injecting: true}, uglifyjs),
+        to.obj(function(newFile, enc, next) {
+          assert.ok(newFile, 'emits a file');
+          assert.ok(newFile.path, 'file has a path');
+          assert.ok(newFile.relative, 'file has relative path information');
+          assert.ok(newFile.contents, 'file has contents');
 
-        assert.ok(newFile instanceof Vinyl, 'file is Vinyl');
-        assert.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+          assert.ok(newFile instanceof Vinyl, 'file is Vinyl');
+          assert.ok(
+            newFile.contents instanceof Buffer,
+            'file contents are a buffer'
+          );
 
-        assert.equal(String(newFile.contents), testContentsOutput);
-        next();
-      })
-    ], done);
+          assert.equal(String(newFile.contents), testContentsOutput);
+          next();
+        })
+      ],
+      done
+    );
   });
 });

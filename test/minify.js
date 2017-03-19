@@ -16,11 +16,13 @@ var describe = mocha.describe;
 var it = mocha.it;
 var beforeEach = mocha.beforeEach;
 
-describe('minify', function () {
+describe('minify', function() {
   var testContentsInput = '"use strict"; (function(console, first, second) { console.log(first + second) }(5, 10))';
-  var testContentsExpected = uglifyjs.minify(testContentsInput, {fromString: true}).code;
+  var testContentsExpected = uglifyjs.minify(testContentsInput, {
+    fromString: true
+  }).code;
 
-  beforeEach(function () {
+  beforeEach(function() {
     this.log = td.replace('../lib/log');
 
     this.testFile = new Vinyl({
@@ -31,41 +33,18 @@ describe('minify', function () {
     });
   });
 
-  it('should minify files', function (done) {
+  it('should minify files', function(done) {
     var log = this.log;
 
-    pipe([
-      from.obj([this.testFile]),
-      require('../minifier')({}, uglifyjs),
-      to.obj(function (newFile, enc, next) {
-        td.verify(log.warn(), {
-          times: 0,
-          ignoreExtraArgs: true
-        });
-
-        assert.ok(newFile, 'emits a file');
-        assert.ok(newFile.path, 'file has a path');
-        assert.ok(newFile.relative, 'file has relative path information');
-        assert.ok(newFile.contents, 'file has contents');
-
-        assert.ok(newFile instanceof Vinyl, 'file is Vinyl');
-        assert.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
-
-        assert.equal(String(newFile.contents), testContentsExpected);
-        next();
-      })
-    ], done);
-  });
-
-  if (version.major > 0 || version.minor >= 11) {
-    it('string argument should cause warning', function (done) {
-      var log = this.log;
-
-      pipe([
+    pipe(
+      [
         from.obj([this.testFile]),
-        require('../minifier')('build.min.js', uglifyjs),
-        to.obj(function (newFile, enc, next) {
-          td.verify(log.warn('gulp-uglify expects an object, non-object provided'));
+        require('../minifier')({}, uglifyjs),
+        to.obj(function(newFile, enc, next) {
+          td.verify(log.warn(), {
+            times: 0,
+            ignoreExtraArgs: true
+          });
 
           assert.ok(newFile, 'emits a file');
           assert.ok(newFile.path, 'file has a path');
@@ -73,12 +52,49 @@ describe('minify', function () {
           assert.ok(newFile.contents, 'file has contents');
 
           assert.ok(newFile instanceof Vinyl, 'file is Vinyl');
-          assert.ok(newFile.contents instanceof Buffer, 'file contents are a buffer');
+          assert.ok(
+            newFile.contents instanceof Buffer,
+            'file contents are a buffer'
+          );
 
           assert.equal(String(newFile.contents), testContentsExpected);
           next();
         })
-      ], done);
+      ],
+      done
+    );
+  });
+
+  if (version.major > 0 || version.minor >= 11) {
+    it('string argument should cause warning', function(done) {
+      var log = this.log;
+
+      pipe(
+        [
+          from.obj([this.testFile]),
+          require('../minifier')('build.min.js', uglifyjs),
+          to.obj(function(newFile, enc, next) {
+            td.verify(
+              log.warn('gulp-uglify expects an object, non-object provided')
+            );
+
+            assert.ok(newFile, 'emits a file');
+            assert.ok(newFile.path, 'file has a path');
+            assert.ok(newFile.relative, 'file has relative path information');
+            assert.ok(newFile.contents, 'file has contents');
+
+            assert.ok(newFile instanceof Vinyl, 'file is Vinyl');
+            assert.ok(
+              newFile.contents instanceof Buffer,
+              'file contents are a buffer'
+            );
+
+            assert.equal(String(newFile.contents), testContentsExpected);
+            next();
+          })
+        ],
+        done
+      );
     });
   }
 });
