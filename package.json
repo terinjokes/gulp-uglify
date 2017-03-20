@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "coveralls": "^2.11.4",
-    "gulp-concat": "^2.0.0",
+    "gulp-concat": "^2.6.1",
     "gulp-sourcemaps": "^1.0.0",
     "intelli-espower-loader": "^1.0.1",
     "istanbul": "^0.4.0",
