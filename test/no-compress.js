@@ -15,7 +15,8 @@ var it = mocha.it;
 
 describe('no-compress', function() {
   it('should not compress files when `compress: false`', function(done) {
-    var testContentsInput = '"use strict"; (function(console, first, second) {\n\tconsole.log(first + second)\n}(5, 10))';
+    var testContentsInput =
+      '"use strict"; (function(console, first, second) {\n\tconsole.log(first + second)\n}(5, 10))';
     var testContentsExpected = uglifyjs.minify(testContentsInput, {
       fromString: true,
       compress: false

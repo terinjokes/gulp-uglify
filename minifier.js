@@ -76,16 +76,13 @@ module.exports = function(opts, uglify) {
       );
     }
 
-    var mangled = trycatch(
-      function() {
-        var map = {};
-        map[file.relative] = String(file.contents);
-        var m = uglify.minify(map, options);
-        m.code = new Buffer(m.code.replace(reSourceMapComment, ''));
-        return m;
-      },
-      createError(file, 'unable to minify JavaScript')
-    );
+    var mangled = trycatch(function() {
+      var map = {};
+      map[file.relative] = String(file.contents);
+      var m = uglify.minify(map, options);
+      m.code = new Buffer(m.code.replace(reSourceMapComment, ''));
+      return m;
+    }, createError(file, 'unable to minify JavaScript'));
 
     if (mangled instanceof GulpUglifyError) {
       return callback(mangled);

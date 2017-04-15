@@ -11,7 +11,8 @@ var beforeEach = mocha.beforeEach;
 
 describe('createError', function() {
   beforeEach(function() {
-    var testOkContentsInput = '"use strict"; (function(console, first, second) { console.log(first + second) }(5, 10))';
+    var testOkContentsInput =
+      '"use strict"; (function(console, first, second) { console.log(first + second) }(5, 10))';
     this.testFile = new Vinyl({
       cwd: '/home/terin/broken-promises/',
       base: '/home/terin/broken-promises/test',

@@ -17,7 +17,8 @@ var it = mocha.it;
 var beforeEach = mocha.beforeEach;
 
 describe('source maps', function() {
-  var testContents1Input = '(function(first, second) {\n    console.log(first + second);\n}(5, 10));\n';
+  var testContents1Input =
+    '(function(first, second) {\n    console.log(first + second);\n}(5, 10));\n';
   var testContents1Expected = uglifyjs.minify(testContents1Input, {
     fromString: true
   }).code;
@@ -219,7 +220,8 @@ describe('source maps', function() {
   });
 
   it('should avoid "ghost" files in sourcemaps', function(done) {
-    var testBabelInput = '"use strict";\n\n(function (first, second) {\n    console.log(first + second);\n})(5, 10);';
+    var testBabelInput =
+      '"use strict";\n\n(function (first, second) {\n    console.log(first + second);\n})(5, 10);';
     var testBabelExpected = uglifyjs.minify(testBabelInput, {
       fromString: true
     }).code;

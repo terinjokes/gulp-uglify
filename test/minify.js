@@ -17,7 +17,8 @@ var it = mocha.it;
 var beforeEach = mocha.beforeEach;
 
 describe('minify', function() {
-  var testContentsInput = '"use strict"; (function(console, first, second) { console.log(first + second) }(5, 10))';
+  var testContentsInput =
+    '"use strict"; (function(console, first, second) { console.log(first + second) }(5, 10))';
   var testContentsExpected = uglifyjs.minify(testContentsInput, {
     fromString: true
   }).code;
