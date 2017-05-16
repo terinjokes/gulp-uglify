@@ -57,6 +57,12 @@ module.exports = function(opts, uglify) {
       );
     }
 
+    if (mangled.warnings) {
+      mangled.warnings.forEach(function(warning) {
+        log.warn('gulp-uglify [%s]: %s', file.relative, warning);
+      });
+    }
+
     file.contents = new Buffer(mangled.code);
 
     if (file.sourceMap) {

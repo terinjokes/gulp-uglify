@@ -37,10 +37,8 @@ the UglifyJS API are supported. There are a few exceptions:
 
 1. The `sourceMap` option must not be set, as it will be automatically configured
    based on your Gulp configuration. See the documentation for [Gulp sourcemaps][gulp-sm].
-2. Setting the `warnings` option has no visible affect. [See #163](gh-163).
 
 [gulp-sm]: https://github.com/gulp-sourcemaps/gulp-sourcemaps#usage
-[gh-163]: https://github.com/terinjokes/gulp-uglify/issues/163
 
 ## Errors
 
