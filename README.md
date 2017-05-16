@@ -32,59 +32,15 @@ information, see [Why Use Pump?](docs/why-use-pump/README.md#why-use-pump).
 
 ## Options
 
-- `mangle`
+Most of the [minify options](https://github.com/mishoo/UglifyJS2#minify-options) from
+the UglifyJS API are supported. There are a few exceptions:
 
-	Pass `false` to skip mangling names.
+1. The `sourceMap` option must not be set, as it will be automatically configured
+   based on your Gulp configuration. See the documentation for [Gulp sourcemaps][gulp-sm].
+2. Setting the `warnings` option has no visible affect. [See #163](gh-163).
 
-- `output`
-
-	Pass an object if you wish to specify additional [output
-	options](http://lisperator.net/uglifyjs/codegen). The defaults are
-	optimized for best compression.
-
-- `compress`
-
-	Pass an object to specify custom [compressor
-	options](http://lisperator.net/uglifyjs/compress). Pass `false` to skip
-	compression completely.
-
-- `preserveComments`
-
-	A convenience option for `options.output.comments`. Defaults to preserving no
-	comments.
-
-	- `all`
-
-		Preserve all comments in code blocks
-
-	- `license`
-
-		Attempts to preserve comments that likely contain licensing information,
-		even if the comment does not have directives such as `@license` or `/*!`.
-
-		Implemented via the [`uglify-save-license`](https://github.com/shinnn/uglify-save-license)
-		module, this option preserves a comment if one of the following is true:
-
-		1. The comment is in the *first* line of a file
-		2. A regular expression matches the string of the comment.
-				For example: `MIT`, `@license`, or `Copyright`.
-		3. There is a comment at the *previous* line, and it matches 1, 2, or 3.
-
-	- `function`
-
-		Specify your own comment preservation function. You will be passed the
-		current node and the current comment and are expected to return either
-		`true` or `false`.
-
-	- `some` (deprecated)
-
-		Preserve comments that start with a bang (`!`) or include a Closure Compiler
-		directive (`@preserve`, `@license`, `@cc_on`).
-		Deprecated in favor of the `license` option, documented above.
-
-You can also pass the `uglify` function any of the options [listed
-here](https://github.com/mishoo/UglifyJS2#the-simple-way) to modify
-UglifyJS's behavior.
+[gulp-sm]: https://github.com/gulp-sourcemaps/gulp-sourcemaps#usage
+[gh-163]: https://github.com/terinjokes/gulp-uglify/issues/163
 
 ## Errors
 
@@ -105,20 +61,20 @@ To see useful error messages, see [Why Use Pump?](docs/why-use-pump/README.md#wh
 
 ## Using a Different UglifyJS
 
+**This API may change before the v3 release. Consider it deprecated.**
+
 By default, `gulp-uglify` uses the version of UglifyJS installed as a dependency.
 It's possible to configure the use of a different version using the "minifier" entry point.
 
 ```javascript
 var uglifyjs = require('uglify-js'); // can be a git checkout
-                                     // or another module (such as `uglify-js-harmony` for ES6 support)
+                                     // or another module (such as `uglify-es` for ES6 support)
 var minifier = require('gulp-uglify/minifier');
 var pump = require('pump');
 
 gulp.task('compress', function (cb) {
   // the same options as described above
-  var options = {
-    preserveComments: 'license'
-  };
+  var options = {};
 
   pump([
       gulp.src('lib/*.js'),

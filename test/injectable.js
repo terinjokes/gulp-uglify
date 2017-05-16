@@ -34,7 +34,6 @@ describe('injecting mocha', function() {
           },
           {
             injecting: true,
-            fromString: true,
             output: {}
           }
         )

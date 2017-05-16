@@ -19,16 +19,11 @@ var beforeEach = mocha.beforeEach;
 describe('source maps', function() {
   var testContents1Input =
     '(function(first, second) {\n    console.log(first + second);\n}(5, 10));\n';
-  var testContents1Expected = uglifyjs.minify(testContents1Input, {
-    fromString: true
-  }).code;
+  var testContents1Expected = uglifyjs.minify(testContents1Input).code;
   var testContents2Input = '(function(alert) {\n    alert(5);\n}(alert));\n';
-  var testContents2Expected = uglifyjs.minify(testContents2Input, {
-    fromString: true
-  }).code;
+  var testContents2Expected = uglifyjs.minify(testContents2Input).code;
   var testConcatExpected = uglifyjs.minify(
-    testContents1Input + '\n' + testContents2Input,
-    {fromString: true}
+    testContents1Input + '\n' + testContents2Input
   ).code;
 
   beforeEach(function() {
@@ -222,9 +217,7 @@ describe('source maps', function() {
   it('should avoid "ghost" files in sourcemaps', function(done) {
     var testBabelInput =
       '"use strict";\n\n(function (first, second) {\n    console.log(first + second);\n})(5, 10);';
-    var testBabelExpected = uglifyjs.minify(testBabelInput, {
-      fromString: true
-    }).code;
+    var testBabelExpected = uglifyjs.minify(testBabelInput).code;
 
     var testFile = new Vinyl({
       cwd: '/home/terin/broken-promises/',

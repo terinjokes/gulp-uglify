@@ -18,7 +18,6 @@ describe('no-compress', function() {
     var testContentsInput =
       '"use strict"; (function(console, first, second) {\n\tconsole.log(first + second)\n}(5, 10))';
     var testContentsExpected = uglifyjs.minify(testContentsInput, {
-      fromString: true,
       compress: false
     }).code;
 
