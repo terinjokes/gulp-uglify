@@ -1,6 +1,6 @@
 # gulp-uglify [![][travis-shield-img]][travis-shield][![][appveyor-shield-img]][appveyor-shield][![][npm-dl-shield-img]][npm-shield][![][npm-v-shield-img]][npm-shield][![][coveralls-shield-img]][coveralls-shield]
 
-> Minify JavaScript with UglifyJS2.
+> Minify JavaScript with UglifyJS3.
 
 ## Installation
 
@@ -89,7 +89,7 @@ gulp.task('compress', function (cb) {
 [appveyor-shield-img]: https://img.shields.io/appveyor/ci/terinjokes/gulp-uglify/master.svg?label=AppVeyor&style=flat-square
 [appveyor-shield]: https://ci.appveyor.com/project/terinjokes/gulp-uglify
 [npm-dl-shield-img]: https://img.shields.io/npm/dm/gulp-uglify.svg?style=flat-square
-[npm-shield]: http://browsenpm.org/package/gulp-uglify
+[npm-shield]: https://yarnpkg.com/en/package/gulp-uglify
 [npm-v-shield-img]: https://img.shields.io/npm/v/gulp-uglify.svg?style=flat-square
 [coveralls-shield-img]: https://img.shields.io/coveralls/terinjokes/gulp-uglify/master.svg?style=flat-square
 [coveralls-shield]: https://coveralls.io/github/terinjokes/gulp-uglify
