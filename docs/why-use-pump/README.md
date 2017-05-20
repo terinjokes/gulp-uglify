@@ -5,7 +5,7 @@ through the piped streams, and source streams aren’t closed if a destination
 stream closed. The [`pump`][pump] module normalizes these problems and passes
 you the errors in a callback.
 
-## An common gulpfile example
+## A common gulpfile example
 
 A common pattern in gulp files is to simply return a Node.js stream, and expect
 the gulp tool to handle errors.
