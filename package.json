@@ -66,7 +66,7 @@
   },
   "files": [
     "index.js",
-    "minifier.js",
+    "composer.js",
     "lib/"
   ],
   "scripts": {
