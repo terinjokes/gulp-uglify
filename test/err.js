@@ -1,38 +1,50 @@
 'use strict';
 var mocha = require('mocha');
-var assert = require('power-assert');
+var assert = require('assert');
 var Vinyl = require('vinyl');
-var mississippi = require('mississippi');
+var td = require('testdouble');
 var GulpUglifyError = require('../lib/gulp-uglify-error');
-var gulpUglify = require('../');
-
-var pipe = mississippi.pipe;
-var to = mississippi.to;
-var from = mississippi.from;
+var minify = require('../lib/minify');
 
 var describe = mocha.describe;
 var it = mocha.it;
 
-describe('stream errors', function() {
-  it('should report files in error', function(done) {
+describe('errors', function() {
+  it('should report files in error', function() {
     var testFile = new Vinyl({
       cwd: '/home/terin/broken-promises/',
       base: '/home/terin/broken-promises/test',
       path: '/home/terin/broken-promises/test/test1.js',
       contents: new Buffer('function errorFunction(error)\n{')
     });
+    var uglify = td.object(['minify']);
+    var logger = td.object(['warn']);
+    var expOptions = {
+      output: {}
+    };
+    var err = new Error();
+    err.line = 28889;
 
-    pipe(
-      [
-        from.obj([testFile]),
-        gulpUglify(),
-        to.obj(function(chunk, enc, next) {
-          assert(false, 'we shouldn\t have gotten here');
-          next();
-        })
-      ],
+    td
+      .when(
+        uglify.minify(
+          {
+            'test1.js': 'function errorFunction(error)\n{'
+          },
+          expOptions
+        )
+      )
+      .thenReturn({
+        error: err
+      });
+
+    var subject = minify(uglify, logger)({});
+
+    assert.throws(
+      function() {
+        subject(testFile);
+      },
       function(err) {
-        assert.ok(err instanceof Error, 'argument should be of type Error');
         assert.ok(
           err instanceof GulpUglifyError,
           'argument should be of type GulpUglifyError'
@@ -43,37 +55,61 @@ describe('stream errors', function() {
           testFile.path,
           'error reports correct file name'
         );
-        assert.equal(err.cause.line, 2, 'error reports correct line number');
+        assert.equal(
+          err.cause.line,
+          28889,
+          'error reports correct line number'
+        );
         assert.ok(err.stack, 'error has a stack');
         assert.ok(!err.showStack, 'error is configured to not print the stack');
-        done();
+        assert.ok(err instanceof Error, 'argument should be of type Error');
+
+        return true;
       }
     );
+
+    td.verify(logger.warn(), {times: 0, ignoreExtraArgs: true});
   });
 
-  it("shouldn't blow up when given output options", function(done) {
+  it("shouldn't blow up when given output options", function() {
     var testFile = new Vinyl({
       cwd: '/home/terin/broken-promises/',
       base: '/home/terin/broken-promises/test',
-      path: '/home/terin/broken-promises/test/test2.js',
-      contents: new Buffer(
-        '"use strict"; (function(console, first, second) { console.log(first + second) }(5, 10))'
+      path: '/home/terin/broken-promises/test/test1.js',
+      contents: new Buffer('{}')
+    });
+    var uglify = td.object(['minify']);
+    var logger = td.object(['warn']);
+    var expOptions = {
+      output: {
+        exportAll: true
+      }
+    };
+    var err = new Error('`exportAll` is not a supported option');
+
+    td
+      .when(
+        uglify.minify(
+          {
+            'test1.js': '{}'
+          },
+          expOptions
+        )
       )
+      .thenReturn({
+        error: err
+      });
+
+    var subject = minify(uglify, logger)({
+      output: {
+        exportAll: true
+      }
     });
 
-    pipe(
-      [
-        from.obj([testFile]),
-        gulpUglify({
-          output: {
-            exportAll: true
-          }
-        }),
-        to.obj(function(chunk, enc, next) {
-          assert(false, 'we shouldn\t have gotten here');
-          next();
-        })
-      ],
+    assert.throws(
+      function() {
+        subject(testFile);
+      },
       function(err) {
         assert.ok(err instanceof Error, 'argument should be of type Error');
         assert.ok(
@@ -91,8 +127,11 @@ describe('stream errors', function() {
           'error reports correct file name'
         );
         assert.ok(!err.showStack, 'error is configured to not print the stack');
-        done();
+
+        return true;
       }
     );
+
+    td.verify(logger.warn(), {times: 0, ignoreExtraArgs: true});
   });
 });

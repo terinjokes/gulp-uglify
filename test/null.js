@@ -1,17 +1,13 @@
 'use strict';
 var mocha = require('mocha');
-var assert = require('power-assert');
+var assert = require('assert');
 var Vinyl = require('vinyl');
-var mississippi = require('mississippi');
-var gulpUglify = require('../');
+var td = require('testdouble');
+var minify = require('../lib/minify');
 
 var describe = mocha.describe;
 var it = mocha.it;
 var beforeEach = mocha.beforeEach;
-
-var pipe = mississippi.pipe;
-var to = mississippi.to;
-var from = mississippi.from;
 
 describe('null Vinyl contents', function() {
   beforeEach(function() {
@@ -23,24 +19,17 @@ describe('null Vinyl contents', function() {
     });
   });
 
-  it('should passthrough null files', function(done) {
-    pipe(
-      [
-        from.obj([this.testFile]),
-        gulpUglify(),
-        to.obj(function(newFile, enc, next) {
-          assert.ok(newFile, 'emits a file');
-          assert.ok(newFile.path, 'file has a path');
-          assert.ok(newFile.relative, 'file has relative path information');
-          assert.ok(!newFile.contents, 'file does not have contents');
+  it('should passthrough null files', function() {
+    var uglify = td.object(['minify']);
+    var logger = td.object(['warn']);
 
-          assert.ok(newFile instanceof Vinyl, 'file is Vinyl');
+    var subject = minify(uglify, logger)({});
 
-          assert.strictEqual(newFile.contents, null);
-          next();
-        })
-      ],
-      done
-    );
+    var file = subject(this.testFile);
+
+    assert.strictEqual(file, this.testFile);
+
+    td.verify(logger.warn(), {times: 0, ignoreExtraArgs: true});
+    td.verify(uglify.minify(), {times: 0, ignoreExtraArgs: true});
   });
 });

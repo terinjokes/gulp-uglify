@@ -1,6 +1,6 @@
 'use strict';
 var mocha = require('mocha');
-var assert = require('power-assert');
+var assert = require('assert');
 var Vinyl = require('vinyl');
 var createError = require('../lib/create-error');
 var GulpUglifyError = require('../lib/gulp-uglify-error');
