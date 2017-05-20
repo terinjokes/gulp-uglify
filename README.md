@@ -59,16 +59,16 @@ To see useful error messages, see [Why Use Pump?](docs/why-use-pump/README.md#wh
 
 ## Using a Different UglifyJS
 
-**This API may change before the v3 release. Consider it deprecated.**
-
 By default, `gulp-uglify` uses the version of UglifyJS installed as a dependency.
-It's possible to configure the use of a different version using the "minifier" entry point.
+It's possible to configure the use of a different version using the "composer" entry point.
 
 ```javascript
 var uglifyjs = require('uglify-js'); // can be a git checkout
                                      // or another module (such as `uglify-es` for ES6 support)
-var minifier = require('gulp-uglify/minifier');
+var composer = require('gulp-uglify/composer');
 var pump = require('pump');
+
+var minify = composer(uglifyjs, console);
 
 gulp.task('compress', function (cb) {
   // the same options as described above
@@ -76,7 +76,7 @@ gulp.task('compress', function (cb) {
 
   pump([
       gulp.src('lib/*.js'),
-      minifier(options, uglifyjs),
+      minify(options),
       gulp.dest('dist')
     ],
     cb

@@ -1,10 +1,11 @@
 'use strict';
 var uglify = require('uglify-js');
-var minifier = require('./minifier');
+var compose = require('./composer');
 var GulpUglifyError = require('./lib/gulp-uglify-error');
+var logger = require('./lib/log');
 
 module.exports = function(opts) {
-  return minifier(opts, uglify);
+  return compose(uglify, logger)(opts);
 };
 
 module.exports.GulpUglifyError = GulpUglifyError;

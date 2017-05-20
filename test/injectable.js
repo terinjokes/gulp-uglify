@@ -4,7 +4,7 @@ var assert = require('power-assert');
 var Vinyl = require('vinyl');
 var td = require('testdouble');
 var mississippi = require('mississippi');
-var minifer = require('../minifier');
+var composer = require('../composer');
 
 var pipe = mississippi.pipe;
 var from = mississippi.from;
@@ -25,6 +25,8 @@ describe('injecting mocha', function() {
     });
 
     var uglifyjs = td.object(['minify']);
+    var logger = td.object(['warn']);
+    var minify = composer(uglifyjs, logger);
 
     td
       .when(
@@ -45,8 +47,9 @@ describe('injecting mocha', function() {
     pipe(
       [
         from.obj([testFile]),
-        minifer({injecting: true}, uglifyjs),
+        minify({injecting: true}),
         to.obj(function(newFile, enc, next) {
+          td.verify(logger.warn(), {times: 0, ignoreExtraArgs: true});
           assert.ok(newFile, 'emits a file');
           assert.ok(newFile.path, 'file has a path');
           assert.ok(newFile.relative, 'file has relative path information');

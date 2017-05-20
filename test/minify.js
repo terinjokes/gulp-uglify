@@ -8,6 +8,8 @@ var uglifyjs = require('uglify-js');
 var mississippi = require('mississippi');
 var version = require('semver')(process.version);
 
+var composer = require('../composer');
+
 var pipe = mississippi.pipe;
 var to = mississippi.to;
 var from = mississippi.from;
@@ -22,7 +24,7 @@ describe('minify', function() {
   var testContentsExpected = uglifyjs.minify(testContentsInput).code;
 
   beforeEach(function() {
-    this.log = td.replace('../lib/log');
+    this.log = td.object(['warn']);
 
     this.testFile = new Vinyl({
       cwd: '/home/terin/broken-promises/',
@@ -38,7 +40,7 @@ describe('minify', function() {
     pipe(
       [
         from.obj([this.testFile]),
-        require('../minifier')({}, uglifyjs),
+        composer(uglifyjs, log)({}),
         to.obj(function(newFile, enc, next) {
           td.verify(log.warn(), {
             times: 0,
@@ -71,7 +73,7 @@ describe('minify', function() {
       pipe(
         [
           from.obj([this.testFile]),
-          require('../minifier')('build.min.js', uglifyjs),
+          composer(uglifyjs, log)('build.min.js'),
           to.obj(function(newFile, enc, next) {
             td.verify(
               log.warn('gulp-uglify expects an object, non-object provided')
