@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "coveralls": "^2.11.4",
-    "eslint": "^3.18.0",
+    "eslint": "^3.19.0",
     "eslint-config-prettier": "^2.1.0",
     "eslint-config-xo": "^0.18.1",
     "eslint-plugin-no-use-extend-native": "^0.3.12",
