@@ -56,6 +56,28 @@ describe('minify', function() {
     });
   });
 
+  it('should retain the nameCache option as a mutable reference', function() {
+    var uglify = td.object(['minify']);
+    var logger = td.object(['warn']);
+
+    var nameCache = {};
+    td.when(uglify.minify(td.matchers.anything(), td.matchers.anything()))
+      .thenDo(function(files, options) {
+        options.nameCache['unmangled'] = 'mangled';
+        return { code: 'foobar' };
+      });
+
+    var subject = minify(uglify, logger)({ nameCache: nameCache });
+    subject(this.testFile);
+
+    assert.equal(nameCache['unmangled'], 'mangled');
+
+    td.verify(logger.warn(), {
+      times: 0,
+      ignoreExtraArgs: true
+    });
+  });
+
   it('string argument should cause warning', function() {
     var uglify = td.object(['minify']);
     var logger = td.object(['warn']);
@@ -86,4 +108,5 @@ describe('minify', function() {
     assert.ok(Buffer.isBuffer(file.contents));
     assert.equal(String(file.contents), 'foobar');
   });
+
 });
