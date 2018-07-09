@@ -25,18 +25,16 @@ describe('errors', function() {
     var err = new Error();
     err.line = 28889;
 
-    td
-      .when(
-        uglify.minify(
-          {
-            'test1.js': 'function errorFunction(error)\n{'
-          },
-          expOptions
-        )
+    td.when(
+      uglify.minify(
+        {
+          'test1.js': 'function errorFunction(error)\n{'
+        },
+        expOptions
       )
-      .thenReturn({
-        error: err
-      });
+    ).thenReturn({
+      error: err
+    });
 
     var subject = minify(uglify, logger)({});
 
@@ -87,18 +85,16 @@ describe('errors', function() {
     };
     var err = new Error('`exportAll` is not a supported option');
 
-    td
-      .when(
-        uglify.minify(
-          {
-            'test1.js': '{}'
-          },
-          expOptions
-        )
+    td.when(
+      uglify.minify(
+        {
+          'test1.js': '{}'
+        },
+        expOptions
       )
-      .thenReturn({
-        error: err
-      });
+    ).thenReturn({
+      error: err
+    });
 
     var subject = minify(uglify, logger)({
       output: {

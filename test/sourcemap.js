@@ -36,26 +36,24 @@ describe('init-ed source maps', function() {
     var uglify = td.object(['minify']);
     var logger = td.object(['logger']);
 
-    td
-      .when(
-        uglify.minify(
-          {
-            'test1.js': testContents1Input
-          },
-          {
-            output: {},
-            sourceMap: {
-              filename: 'test1.js',
-              includeSources: true,
-              content: testFile.sourceMap
-            }
+    td.when(
+      uglify.minify(
+        {
+          'test1.js': testContents1Input
+        },
+        {
+          output: {},
+          sourceMap: {
+            filename: 'test1.js',
+            includeSources: true,
+            content: testFile.sourceMap
           }
-        )
+        }
       )
-      .thenReturn({
-        code: 'foobar',
-        map: JSON.stringify(outMap.map)
-      });
+    ).thenReturn({
+      code: 'foobar',
+      map: JSON.stringify(outMap.map)
+    });
 
     var subject = minify(uglify, logger)({});
     var file = subject(testFile);
@@ -99,26 +97,24 @@ describe('init-ed source maps', function() {
     var uglify = td.object(['minify']);
     var logger = td.object(['warn']);
 
-    td
-      .when(
-        uglify.minify(
-          {
-            'test1.js': String(inMap)
-          },
-          {
-            output: {},
-            sourceMap: {
-              filename: 'test1.js',
-              includeSources: true,
-              content: testFile.sourceMap
-            }
+    td.when(
+      uglify.minify(
+        {
+          'test1.js': String(inMap)
+        },
+        {
+          output: {},
+          sourceMap: {
+            filename: 'test1.js',
+            includeSources: true,
+            content: testFile.sourceMap
           }
-        )
+        }
       )
-      .thenReturn({
-        code: 'send a PR changing this to the best La Croix flavor',
-        map: JSON.stringify(outMap.map)
-      });
+    ).thenReturn({
+      code: 'send a PR changing this to the best La Croix flavor',
+      map: JSON.stringify(outMap.map)
+    });
 
     var subject = minify(uglify, logger)({});
     var file = subject(testFile);

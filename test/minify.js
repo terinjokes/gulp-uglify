@@ -28,20 +28,18 @@ describe('minify', function() {
     var uglify = td.object(['minify']);
     var logger = td.object(['warn']);
 
-    td
-      .when(
-        uglify.minify(
-          {
-            'test1.js': testContentsInput
-          },
-          {
-            output: {}
-          }
-        )
+    td.when(
+      uglify.minify(
+        {
+          'test1.js': testContentsInput
+        },
+        {
+          output: {}
+        }
       )
-      .thenReturn({
-        code: 'foobar'
-      });
+    ).thenReturn({
+      code: 'foobar'
+    });
 
     var subject = minify(uglify, logger)({});
     var file = subject(this.testFile);
@@ -60,20 +58,18 @@ describe('minify', function() {
     var uglify = td.object(['minify']);
     var logger = td.object(['warn']);
 
-    td
-      .when(
-        uglify.minify(
-          {
-            'test1.js': testContentsInput
-          },
-          {
-            output: {}
-          }
-        )
+    td.when(
+      uglify.minify(
+        {
+          'test1.js': testContentsInput
+        },
+        {
+          output: {}
+        }
       )
-      .thenReturn({
-        code: 'foobar'
-      });
+    ).thenReturn({
+      code: 'foobar'
+    });
 
     var subject = minify(uglify, logger)('build.min.js');
     var file = subject(this.testFile);
