@@ -1,9 +1,9 @@
-# Why Use Pump?
+# Why Use Pipeline?
 
 When using `pipe` from the Node.js streams, errors are not propagated forward
 through the piped streams, and source streams aren’t closed if a destination
-stream closed. The [`pump`][pump] module normalizes these problems and passes
-you the errors in a callback.
+stream closed. The [`pipeline`][pipeline] method of the Streams API normalizes
+these problems, and properly propagates errors of substreams to the pipeline.
 
 ## A common gulpfile example
 
@@ -83,40 +83,39 @@ gulp.task('compress', function () {
 This is a lot of complexity to add in each of your gulp tasks, and it’s easy to
 forget to do it. In addition, it’s still not perfect, as it doesn’t properly
 signal to gulp’s task system that the task has failed. We can fix this, and we
-can handle the other pesky issues with error propogations with streams, but it’s
+can handle the other pesky issues with error propagations with streams, but it’s
 even more work!
 
-## Using pump
+## Using pipelines
 
-The [`pump`][pump] module is a cheat code of sorts. It’s a wrapper around the
-`pipe` functionality that handles these cases for you, so you can stop hacking
-on your gulpfiles, and get back to hacking new features into your app.
+The [`pipeline`][pipeline] method is a cheat code of sorts. It’s a wrapper
+around the `pipe` functionality that handles these cases for you, so you can
+stop hacking on your gulpfiles, and get back to hacking new features into your
+app.
 
 ```javascript
 var gulp = require('gulp');
 var uglify = require('gulp-uglify');
-var pump = require('pump');
+var pipeline = require('readable-stream').pipeline;
 
-gulp.task('compress', function (cb) {
-  pump([
+gulp.task('compress', function () {
+  return pipeline(
       gulp.src('lib/*.js'),
       uglify(),
       gulp.dest('dist')
-    ],
-    cb
   );
 });
 ```
 
-The gulp task system provides a gulp task with a callback, which can signal
-successful task completion (being called with no arguments), or a task failure
-(being called with an Error argument). Fortunately, this is the exact same
-format `pump` uses!
+The pipeline method accepts variable number of streams, which it internally
+pipes together. It is careful to propagate errors and destroy streams properly.
+The gulp task system waits for the returned pipeline stream to end, just like
+before, but can now handle errors from the substreams properly.
 
 ![pump error](pump-error.png)
 
 Now it’s very clear what plugin the error was from, what the error actually was,
 and from what file and line number.
 
-[pump]: https://github.com/mafintosh/pump
+[pipeline]: https://nodejs.org/api/stream.html#stream_stream_pipeline_streams_callback
 [uncaughtException]: https://nodejs.org/api/process.html#process_event_uncaughtexception

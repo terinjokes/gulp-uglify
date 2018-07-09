@@ -13,22 +13,21 @@ Install package with NPM and add it to your development dependencies:
 ```javascript
 var gulp = require('gulp');
 var uglify = require('gulp-uglify');
-var pump = require('pump');
+var pipeline = require('readable-stream').pipeline;
 
-gulp.task('compress', function (cb) {
-  pump([
+gulp.task('compress', function () {
+  return pipeline(
         gulp.src('lib/*.js'),
         uglify(),
         gulp.dest('dist')
-    ],
-    cb
   );
 });
 ```
 
 To help properly handle error conditions with Node streams, this project
-recommends the use of [`pump`](https://github.com/mafintosh/pump). For more
-information, see [Why Use Pump?](docs/why-use-pump/README.md#why-use-pump).
+recommends the use of
+[`pipeline`](https://nodejs.org/docs/latest/api/stream.html#stream_stream_pipeline_streams_callback),
+from [`readable-stream`](https://github.com/nodejs/readable-stream).
 
 ## Options
 
@@ -55,7 +54,7 @@ Most UglifyJS error messages have the following properties:
 - `filename`
 - `line`
 
-To see useful error messages, see [Why Use Pump?](docs/why-use-pump/README.md#why-use-pump).
+To see useful error messages, see [Why Use Pipeline?](docs/why-use-pipeline/README.md#why-use-pipeline).
 
 ## Using a Different UglifyJS
 
