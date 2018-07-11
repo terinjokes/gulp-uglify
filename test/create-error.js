@@ -1,6 +1,7 @@
 'use strict';
 var test = require('tape-catch');
 var assert = require('assert');
+var Buffer = require('safe-buffer').Buffer;
 var Vinyl = require('vinyl');
 var createError = require('../lib/create-error');
 var GulpUglifyError = require('../lib/gulp-uglify-error');
@@ -44,6 +45,6 @@ function createTestFile() {
     cwd: '/home/terin/broken-promises/',
     base: '/home/terin/broken-promises/test',
     path: '/home/terin/broken-promises/test/test2.js',
-    contents: new Buffer(testOkContentsInput)
+    contents: Buffer.from(testOkContentsInput)
   });
 }

@@ -1,6 +1,7 @@
 'use strict';
 var test = require('tape');
 var assert = require('assert');
+var Buffer = require('safe-buffer').Buffer;
 var Vinyl = require('vinyl');
 var SourceListMap = require('source-list-map').SourceListMap;
 var fromStringWithSourceMap = require('source-list-map')
@@ -15,7 +16,7 @@ test('sourcemaps should be merged', function(t) {
     cwd: '/home/terin/broken-promises/',
     base: '/home/terin/broken-promises/test',
     path: '/home/terin/broken-promises/test/test1.js',
-    contents: new Buffer(testContents1Input)
+    contents: Buffer.from(testContents1Input)
   });
 
   var originalMap = new SourceListMap();
@@ -80,7 +81,7 @@ test('sourcemaps should merge when concatted', function(t) {
     cwd: '/home/terin/broken-promises/',
     base: '/home/terin/broken-promises/test',
     path: '/home/terin/broken-promises/test/test1.js',
-    contents: new Buffer(String(inMap))
+    contents: Buffer.from(String(inMap))
   });
   testFile.sourceMap = inMap.toStringWithSourceMap({file: 'test1.js'}).map;
 

@@ -9,6 +9,7 @@
     "has-gulplog": "^0.1.0",
     "lodash": "^4.13.1",
     "make-error-cause": "^1.1.1",
+    "safe-buffer": "^5.1.2",
     "through2": "^2.0.0",
     "uglify-js": "^3.0.5",
     "vinyl-sourcemaps-apply": "^0.2.0"

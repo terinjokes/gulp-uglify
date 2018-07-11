@@ -2,6 +2,7 @@
 var test = require('tape');
 var assert = require('assert');
 var Vinyl = require('vinyl');
+var Buffer = require('safe-buffer').Buffer;
 var td = require('testdouble');
 var minify = require('../lib/minify');
 
@@ -78,6 +79,6 @@ function createTestFile(input) {
     cwd: '/home/terin/broken-promises/',
     base: '/home/terin/broken-promises/test',
     path: '/home/terin/broken-promises/test/test1.js',
-    contents: new Buffer(input)
+    contents: Buffer.from(input)
   });
 }

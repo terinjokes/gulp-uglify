@@ -1,6 +1,7 @@
 'use strict';
 var test = require('tape');
 var assert = require('assert');
+var Buffer = require('safe-buffer').Buffer;
 var Vinyl = require('vinyl');
 var td = require('testdouble');
 var GulpUglifyError = require('../lib/gulp-uglify-error');
@@ -11,7 +12,7 @@ test('errors should report files in error', function(t) {
     cwd: '/home/terin/broken-promises/',
     base: '/home/terin/broken-promises/test',
     path: '/home/terin/broken-promises/test/test1.js',
-    contents: new Buffer('function errorFunction(error)\n{')
+    contents: Buffer.from('function errorFunction(error)\n{')
   });
   var uglify = td.object(['minify']);
   var logger = td.object(['warn']);
@@ -68,7 +69,7 @@ test("errors shouldn't blow up", function(t) {
     cwd: '/home/terin/broken-promises/',
     base: '/home/terin/broken-promises/test',
     path: '/home/terin/broken-promises/test/test1.js',
-    contents: new Buffer('{}')
+    contents: Buffer.from('{}')
   });
   var uglify = td.object(['minify']);
   var logger = td.object(['warn']);
