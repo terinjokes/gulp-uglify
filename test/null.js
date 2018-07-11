@@ -1,5 +1,5 @@
 'use strict';
-var test = require('tape');
+var test = require('tape-catch');
 var assert = require('assert');
 var Vinyl = require('vinyl');
 var td = require('testdouble');
