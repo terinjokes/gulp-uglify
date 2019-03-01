@@ -12,4 +12,4 @@ matrix:
     - node_js: 10
       script: npm run lint
 script:
-  - node --throw-deprecation ./node_modules/.bin/tape --require intelli-espower-loader test/*.js
+  - node --throw-deprecation ./node_modules/.bin/tape test/*.js
