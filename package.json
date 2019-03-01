@@ -7,7 +7,7 @@
   "dependencies": {
     "gulplog": "^1.0.0",
     "has-gulplog": "^0.1.0",
-    "lodash": "^4.13.1",
+    "lodash": "^4.17.11",
     "make-error-cause": "^1.1.1",
     "safe-buffer": "^5.1.2",
     "through2": "^2.0.0",
