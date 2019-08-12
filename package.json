@@ -10,7 +10,7 @@
     "gulplog": "^1.0.0",
     "has-gulplog": "^0.1.0",
     "isobject": "^4.0.0",
-    "make-error-cause": "^2.2.1",
+    "make-error-cause": "^1.1.1",
     "safe-buffer": "^5.2.0",
     "through2": "^3.0.1",
     "uglify-js": "^3.6.0",
