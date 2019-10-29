@@ -15,13 +15,15 @@ var gulp = require('gulp');
 var uglify = require('gulp-uglify');
 var pipeline = require('readable-stream').pipeline;
 
-gulp.task('compress', function () {
+function compress() {
   return pipeline(
         gulp.src('lib/*.js'),
         uglify(),
         gulp.dest('dist')
   );
-});
+};
+
+exports.compress = compress;
 ```
 
 To help properly handle error conditions with Node streams, this project
@@ -69,7 +71,7 @@ var pump = require('pump');
 
 var minify = composer(uglifyjs, console);
 
-gulp.task('compress', function (cb) {
+function compress() {
   // the same options as described above
   var options = {};
 
@@ -80,7 +82,9 @@ gulp.task('compress', function (cb) {
     ],
     cb
   );
-});
+};
+
+exports.compress = compress;
 ```
 
 [travis-shield-img]: https://img.shields.io/travis/terinjokes/gulp-uglify/master.svg?label=Travis%20CI&style=flat-square
